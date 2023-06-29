@@ -1,0 +1,77 @@
+diff -uNr a/debian/patches/fix-gcc-13-cstdint.patch b/debian/patches/fix-gcc-13-cstdint.patch
+--- a/debian/patches/fix-gcc-13-cstdint.patch	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/fix-gcc-13-cstdint.patch	2023-06-01 00:37:29.000000000 +0800
+@@ -0,0 +1,67 @@
++Description: <short summary of the patch>
++ TODO: Put a short summary on the line above and replace this paragraph
++ with a longer explanation of this change. Complete the meta-information
++ with other relevant fields (see below for details). To make it easier, the
++ information below has been extracted from the changelog. Adjust it or drop
++ it.
++ .
++ indi (1.9.9+dfsg-2) unstable; urgency=medium
++ .
++   * Upload to unstable.
++   * Make sure to link with atomic on architectures that need it, i.e. riscv64.
++Author: Pino Toscano <pino@debian.org>
++
++---
++The information above should follow the Patch Tagging Guidelines, please
++checkout https://dep.debian.net/deps/dep3/ to learn about the format. Here
++are templates for supplementary fields that you might want to add:
++
++Origin: (upstream|backport|vendor|other), (<patch-url>|commit:<commit-id>)
++Bug: <upstream-bugtracker-url>
++Bug-Debian: https://bugs.debian.org/<bugnumber>
++Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
++Forwarded: (no|not-needed|<patch-forwarded-url>)
++Applied-Upstream: <version>, (<commit-url>|commit:<commid-id>)
++Reviewed-By: <name and email of someone who approved/reviewed the patch>
++Last-Update: 2023-05-31
++
++--- indi-1.9.9+dfsg.orig/drivers/telescope/ieqdriverbase.h
+++++ indi-1.9.9+dfsg/drivers/telescope/ieqdriverbase.h
++@@ -22,6 +22,7 @@
++ 
++ #include <string>
++ #include <vector>
+++#include <cstdint>
++ 
++ namespace iEQ
++ {
++--- indi-1.9.9+dfsg.orig/drivers/telescope/ieqprolegacydriver.h
+++++ indi-1.9.9+dfsg/drivers/telescope/ieqprolegacydriver.h
++@@ -21,6 +21,7 @@
++ #pragma once
++ 
++ #include <string>
+++#include <cstdint>
++ 
++ typedef enum { GPS_OFF, GPS_ON, GPS_DATA_OK } IEQ_GPS_STATUS;
++ typedef enum
++--- indi-1.9.9+dfsg.orig/libs/indibase/connectionplugins/connectionserial.h
+++++ indi-1.9.9+dfsg/libs/indibase/connectionplugins/connectionserial.h
++@@ -24,6 +24,7 @@
++ 
++ #include <string>
++ #include <vector>
+++#include <cstdint>
++ 
++ namespace Connection
++ {
++--- indi-1.9.9+dfsg.orig/libs/indibase/dsp/dspinterface.h
+++++ indi-1.9.9+dfsg/libs/indibase/dsp/dspinterface.h
++@@ -26,6 +26,7 @@
++ #include <fitsio.h>
++ #include <functional>
++ #include <string>
+++#include <cstdint>
++ 
++ namespace INDI
++ {
+diff -uNr a/debian/patches/series b/debian/patches/series
+--- a/debian/patches/series	2021-01-12 17:07:45.000000000 +0800
++++ b/debian/patches/series	2023-06-01 00:37:29.000000000 +0800
+@@ -1 +1,2 @@
+ hurd_include.diff
++fix-gcc-13-cstdint.patch

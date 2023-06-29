@@ -1,0 +1,40 @@
+diff -uNr a/debian/control b/debian/control
+--- a/debian/control	2023-03-20 23:27:27.000000000 +0800
++++ b/debian/control	2023-06-21 23:28:39.000000000 +0800
+@@ -26,8 +26,8 @@
+                libibus-1.0-dev (>= 1.5.2),
+                libjson-glib-dev,
+                libkrb5-dev,
+-               libmalcontent-0-dev [amd64 arm64 armel armhf i386 mipsel mips64el ppc64el s390x hppa hurd-i386 ppc64 riscv64],
+-               libmalcontent-ui-dev [amd64 arm64 armel armhf i386 mipsel mips64el ppc64el s390x hppa hurd-i386 ppc64 riscv64],
++               libmalcontent-0-dev [amd64 arm64 armel armhf i386 loong64 mipsel mips64el ppc64el s390x hppa hurd-i386 ppc64 riscv64],
++               libmalcontent-ui-dev [amd64 arm64 armel armhf i386 loong64 mipsel mips64el ppc64el s390x hppa hurd-i386 ppc64 riscv64],
+                libnm-dev (>= 1.2),
+                libnma-gtk4-dev (>= 1.0),
+                libpango1.0-dev (>= 1.32.5),
+diff -uNr a/debian/control.in b/debian/control.in
+--- a/debian/control.in	2023-03-20 23:27:27.000000000 +0800
++++ b/debian/control.in	2023-06-21 23:17:13.000000000 +0800
+@@ -22,8 +22,8 @@
+                libibus-1.0-dev (>= 1.5.2),
+                libjson-glib-dev,
+                libkrb5-dev,
+-               libmalcontent-0-dev [amd64 arm64 armel armhf i386 mipsel mips64el ppc64el s390x hppa hurd-i386 ppc64 riscv64],
+-               libmalcontent-ui-dev [amd64 arm64 armel armhf i386 mipsel mips64el ppc64el s390x hppa hurd-i386 ppc64 riscv64],
++               libmalcontent-0-dev [amd64 arm64 armel armhf i386 loong64 mipsel mips64el ppc64el s390x hppa hurd-i386 ppc64 riscv64],
++               libmalcontent-ui-dev [amd64 arm64 armel armhf i386 loong64 mipsel mips64el ppc64el s390x hppa hurd-i386 ppc64 riscv64],
+                libnm-dev (>= 1.2),
+                libnma-gtk4-dev (>= 1.0),
+                libpango1.0-dev (>= 1.32.5),
+diff -uNr a/debian/rules b/debian/rules
+--- a/debian/rules	2023-03-20 23:27:27.000000000 +0800
++++ b/debian/rules	2023-06-21 23:17:56.000000000 +0800
+@@ -10,7 +10,7 @@
+ ifeq (yes,$(shell dpkg-vendor --derives-from Ubuntu && echo yes))
+ PARENTAL_CONTROL := -Dparental_controls=disabled
+ else
+-ifneq (,$(filter $(DEB_HOST_ARCH), amd64 arm64 armel armhf i386 mipsel mips64el ppc64el s390x hppa hurd-i386 ppc64 riscv64))
++ifneq (,$(filter $(DEB_HOST_ARCH), amd64 arm64 armel armhf i386 loong64 mipsel mips64el ppc64el s390x hppa hurd-i386 ppc64 riscv64))
+ PARENTAL_CONTROL := -Dparental_controls=enabled
+ else
+ PARENTAL_CONTROL := -Dparental_controls=disabled

@@ -1,0 +1,54 @@
+diff -uNr a/debian/control b/debian/control
+--- a/debian/control	2023-02-15 00:08:53.000000000 +0800
++++ b/debian/control	2023-06-21 23:38:37.000000000 +0800
+@@ -38,7 +38,7 @@
+                libkrb5-dev,
+                libnm-dev (>= 1.24.0) [linux-any],
+                libnma-gtk4-dev (>= 1.8.0) [linux-any],
+-               libmalcontent-0-dev (>= 0.7.0) [amd64 arm64 armel armhf i386 mips mipsel mips64el ppc64el s390x hppa powerpc powerpcspe ppc64],
++               libmalcontent-0-dev (>= 0.7.0) [amd64 arm64 armel armhf i386 loong64 mips mipsel mips64el ppc64el s390x hppa powerpc powerpcspe ppc64],
+                libmm-glib-dev [linux-any],
+                libpolkit-gobject-1-dev (>= 0.103),
+                libpulse-dev (>= 13.0~),
+@@ -96,7 +96,7 @@
+             power-profiles-daemon,
+             rygel | rygel-tracker,
+             system-config-printer-common (>= 1.4),
+-            malcontent-gui [amd64 arm64 armel armhf i386 mips mipsel mips64el ppc64el s390x hppa powerpc powerpcspe ppc64],
++            malcontent-gui [amd64 arm64 armel armhf i386 loong64 mips mipsel mips64el ppc64el s390x hppa powerpc powerpcspe ppc64],
+             network-manager-gnome (>= 0.9.8),
+             libnss-myhostname,
+             cracklib-runtime,
+diff -uNr a/debian/control.in b/debian/control.in
+--- a/debian/control.in	2023-02-15 00:08:53.000000000 +0800
++++ b/debian/control.in	2023-06-21 23:38:11.000000000 +0800
+@@ -34,7 +34,7 @@
+                libkrb5-dev,
+                libnm-dev (>= 1.24.0) [linux-any],
+                libnma-gtk4-dev (>= 1.8.0) [linux-any],
+-               libmalcontent-0-dev (>= 0.7.0) [amd64 arm64 armel armhf i386 mips mipsel mips64el ppc64el s390x hppa powerpc powerpcspe ppc64],
++               libmalcontent-0-dev (>= 0.7.0) [amd64 arm64 armel armhf i386 loong64 mips mipsel mips64el ppc64el s390x hppa powerpc powerpcspe ppc64],
+                libmm-glib-dev [linux-any],
+                libpolkit-gobject-1-dev (>= 0.103),
+                libpulse-dev (>= 13.0~),
+@@ -92,7 +92,7 @@
+             power-profiles-daemon,
+             rygel | rygel-tracker,
+             system-config-printer-common (>= 1.4),
+-            malcontent-gui [amd64 arm64 armel armhf i386 mips mipsel mips64el ppc64el s390x hppa powerpc powerpcspe ppc64],
++            malcontent-gui [amd64 arm64 armel armhf i386 loong64 mips mipsel mips64el ppc64el s390x hppa powerpc powerpcspe ppc64],
+             network-manager-gnome (>= 0.9.8),
+             libnss-myhostname,
+             cracklib-runtime,
+diff -uNr a/debian/rules b/debian/rules
+--- a/debian/rules	2023-02-15 00:08:53.000000000 +0800
++++ b/debian/rules	2023-06-21 23:38:36.000000000 +0800
+@@ -12,7 +12,7 @@
+ else
+ DISTRIBUTOR_LOGO := /usr/share/icons/vendor/scalable/emblems/emblem-vendor.svg
+ DISTRIBUTOR_LOGO_DARK := /usr/share/icons/vendor/scalable/emblems/emblem-vendor.svg
+-ifneq (,$(filter $(DEB_HOST_ARCH), amd64 arm64 armel armhf i386 mips mipsel mips64el ppc64el s390x hppa powerpc powerpcspe ppc64))
++ifneq (,$(filter $(DEB_HOST_ARCH), amd64 arm64 armel armhf i386 loong64 mips mipsel mips64el ppc64el s390x hppa powerpc powerpcspe ppc64))
+ MALCONTENT := -Dmalcontent=true
+ else
+ MALCONTENT := -Dmalcontent=false

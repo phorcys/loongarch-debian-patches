@@ -1,0 +1,346 @@
+diff -uNr a/data/debian-cd/bookworm/loong64_businesscard_udeb_include b/data/debian-cd/bookworm/loong64_businesscard_udeb_include
+--- a/data/debian-cd/bookworm/loong64_businesscard_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/bookworm/loong64_businesscard_udeb_include	2023-06-27 19:53:11.000000000 +0800
+@@ -0,0 +1,3 @@
++choose-mirror
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/bookworm/loong64_netinst_udeb_include b/data/debian-cd/bookworm/loong64_netinst_udeb_include
+--- a/data/debian-cd/bookworm/loong64_netinst_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/bookworm/loong64_netinst_udeb_include	2023-06-27 19:53:06.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/bookworm/loong64_udeb_include b/data/debian-cd/bookworm/loong64_udeb_include
+--- a/data/debian-cd/bookworm/loong64_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/bookworm/loong64_udeb_include	2023-06-27 19:53:26.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/bullseye/loong64_businesscard_udeb_include b/data/debian-cd/bullseye/loong64_businesscard_udeb_include
+--- a/data/debian-cd/bullseye/loong64_businesscard_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/bullseye/loong64_businesscard_udeb_include	2023-06-27 19:53:11.000000000 +0800
+@@ -0,0 +1,3 @@
++choose-mirror
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/bullseye/loong64_netinst_udeb_include b/data/debian-cd/bullseye/loong64_netinst_udeb_include
+--- a/data/debian-cd/bullseye/loong64_netinst_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/bullseye/loong64_netinst_udeb_include	2023-06-27 19:53:06.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/bullseye/loong64_udeb_include b/data/debian-cd/bullseye/loong64_udeb_include
+--- a/data/debian-cd/bullseye/loong64_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/bullseye/loong64_udeb_include	2023-06-27 19:53:26.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/buster/loong64_businesscard_udeb_include b/data/debian-cd/buster/loong64_businesscard_udeb_include
+--- a/data/debian-cd/buster/loong64_businesscard_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/buster/loong64_businesscard_udeb_include	2023-06-27 19:53:11.000000000 +0800
+@@ -0,0 +1,3 @@
++choose-mirror
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/buster/loong64_netinst_udeb_include b/data/debian-cd/buster/loong64_netinst_udeb_include
+--- a/data/debian-cd/buster/loong64_netinst_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/buster/loong64_netinst_udeb_include	2023-06-27 19:53:06.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/buster/loong64_udeb_include b/data/debian-cd/buster/loong64_udeb_include
+--- a/data/debian-cd/buster/loong64_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/buster/loong64_udeb_include	2023-06-27 19:53:26.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/jessie/loong64_businesscard_udeb_include b/data/debian-cd/jessie/loong64_businesscard_udeb_include
+--- a/data/debian-cd/jessie/loong64_businesscard_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/jessie/loong64_businesscard_udeb_include	2023-06-27 19:53:11.000000000 +0800
+@@ -0,0 +1,3 @@
++choose-mirror
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/jessie/loong64_netinst_udeb_include b/data/debian-cd/jessie/loong64_netinst_udeb_include
+--- a/data/debian-cd/jessie/loong64_netinst_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/jessie/loong64_netinst_udeb_include	2023-06-27 19:53:06.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/jessie/loong64_udeb_include b/data/debian-cd/jessie/loong64_udeb_include
+--- a/data/debian-cd/jessie/loong64_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/jessie/loong64_udeb_include	2023-06-27 19:53:26.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/kali-dev/loong64_businesscard_udeb_include b/data/debian-cd/kali-dev/loong64_businesscard_udeb_include
+--- a/data/debian-cd/kali-dev/loong64_businesscard_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/kali-dev/loong64_businesscard_udeb_include	2023-06-27 19:53:11.000000000 +0800
+@@ -0,0 +1,3 @@
++choose-mirror
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/kali-dev/loong64_netinst_udeb_include b/data/debian-cd/kali-dev/loong64_netinst_udeb_include
+--- a/data/debian-cd/kali-dev/loong64_netinst_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/kali-dev/loong64_netinst_udeb_include	2023-06-27 19:53:06.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/kali-dev/loong64_udeb_include b/data/debian-cd/kali-dev/loong64_udeb_include
+--- a/data/debian-cd/kali-dev/loong64_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/kali-dev/loong64_udeb_include	2023-06-27 19:53:26.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/kali-last-snapshot/loong64_businesscard_udeb_include b/data/debian-cd/kali-last-snapshot/loong64_businesscard_udeb_include
+--- a/data/debian-cd/kali-last-snapshot/loong64_businesscard_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/kali-last-snapshot/loong64_businesscard_udeb_include	2023-06-27 19:53:11.000000000 +0800
+@@ -0,0 +1,3 @@
++choose-mirror
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/kali-last-snapshot/loong64_netinst_udeb_include b/data/debian-cd/kali-last-snapshot/loong64_netinst_udeb_include
+--- a/data/debian-cd/kali-last-snapshot/loong64_netinst_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/kali-last-snapshot/loong64_netinst_udeb_include	2023-06-27 19:53:06.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/kali-last-snapshot/loong64_udeb_include b/data/debian-cd/kali-last-snapshot/loong64_udeb_include
+--- a/data/debian-cd/kali-last-snapshot/loong64_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/kali-last-snapshot/loong64_udeb_include	2023-06-27 19:53:26.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/kali-rolling/loong64_businesscard_udeb_include b/data/debian-cd/kali-rolling/loong64_businesscard_udeb_include
+--- a/data/debian-cd/kali-rolling/loong64_businesscard_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/kali-rolling/loong64_businesscard_udeb_include	2023-06-27 19:53:11.000000000 +0800
+@@ -0,0 +1,3 @@
++choose-mirror
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/kali-rolling/loong64_netinst_udeb_include b/data/debian-cd/kali-rolling/loong64_netinst_udeb_include
+--- a/data/debian-cd/kali-rolling/loong64_netinst_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/kali-rolling/loong64_netinst_udeb_include	2023-06-27 19:53:06.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/kali-rolling/loong64_udeb_include b/data/debian-cd/kali-rolling/loong64_udeb_include
+--- a/data/debian-cd/kali-rolling/loong64_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/kali-rolling/loong64_udeb_include	2023-06-27 19:53:26.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/sid/loong64_businesscard_udeb_include b/data/debian-cd/sid/loong64_businesscard_udeb_include
+--- a/data/debian-cd/sid/loong64_businesscard_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/sid/loong64_businesscard_udeb_include	2023-06-27 19:53:11.000000000 +0800
+@@ -0,0 +1,3 @@
++choose-mirror
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/sid/loong64_netinst_udeb_include b/data/debian-cd/sid/loong64_netinst_udeb_include
+--- a/data/debian-cd/sid/loong64_netinst_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/sid/loong64_netinst_udeb_include	2023-06-27 19:53:06.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/sid/loong64_udeb_include b/data/debian-cd/sid/loong64_udeb_include
+--- a/data/debian-cd/sid/loong64_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/sid/loong64_udeb_include	2023-06-27 19:53:26.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/squeeze/loong64_businesscard_udeb_include b/data/debian-cd/squeeze/loong64_businesscard_udeb_include
+--- a/data/debian-cd/squeeze/loong64_businesscard_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/squeeze/loong64_businesscard_udeb_include	2023-06-27 19:53:11.000000000 +0800
+@@ -0,0 +1,3 @@
++choose-mirror
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/squeeze/loong64_netinst_udeb_include b/data/debian-cd/squeeze/loong64_netinst_udeb_include
+--- a/data/debian-cd/squeeze/loong64_netinst_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/squeeze/loong64_netinst_udeb_include	2023-06-27 19:53:06.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/squeeze/loong64_udeb_include b/data/debian-cd/squeeze/loong64_udeb_include
+--- a/data/debian-cd/squeeze/loong64_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/squeeze/loong64_udeb_include	2023-06-27 19:53:26.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/stretch/loong64_businesscard_udeb_include b/data/debian-cd/stretch/loong64_businesscard_udeb_include
+--- a/data/debian-cd/stretch/loong64_businesscard_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/stretch/loong64_businesscard_udeb_include	2023-06-27 19:53:11.000000000 +0800
+@@ -0,0 +1,3 @@
++choose-mirror
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/stretch/loong64_netinst_udeb_include b/data/debian-cd/stretch/loong64_netinst_udeb_include
+--- a/data/debian-cd/stretch/loong64_netinst_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/stretch/loong64_netinst_udeb_include	2023-06-27 19:53:06.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/stretch/loong64_udeb_include b/data/debian-cd/stretch/loong64_udeb_include
+--- a/data/debian-cd/stretch/loong64_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/stretch/loong64_udeb_include	2023-06-27 19:53:26.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/unstable/loong64_businesscard_udeb_include b/data/debian-cd/unstable/loong64_businesscard_udeb_include
+--- a/data/debian-cd/unstable/loong64_businesscard_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/unstable/loong64_businesscard_udeb_include	2023-06-27 19:53:11.000000000 +0800
+@@ -0,0 +1,3 @@
++choose-mirror
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/unstable/loong64_netinst_udeb_include b/data/debian-cd/unstable/loong64_netinst_udeb_include
+--- a/data/debian-cd/unstable/loong64_netinst_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/unstable/loong64_netinst_udeb_include	2023-06-27 19:53:06.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/data/debian-cd/unstable/loong64_udeb_include b/data/debian-cd/unstable/loong64_udeb_include
+--- a/data/debian-cd/unstable/loong64_udeb_include	1970-01-01 08:00:00.000000000 +0800
++++ b/data/debian-cd/unstable/loong64_udeb_include	2023-06-27 19:53:26.000000000 +0800
+@@ -0,0 +1,2 @@
++netcfg
++ethdetect
+diff -uNr a/functions/configuration.sh b/functions/configuration.sh
+--- a/functions/configuration.sh	2023-05-02 18:56:24.000000000 +0800
++++ b/functions/configuration.sh	2023-05-25 21:33:48.000000000 +0800
+@@ -82,6 +82,9 @@
+ 				i?86)
+ 					LB_ARCHITECTURE="i386"
+ 					;;
++				loongarch64)
++					LB_ARCHITECTURE="loong64"
++					;;
+ 
+ 				*)
+ 					Echo_error "Unable to determine current architecture"
+@@ -244,6 +247,10 @@
+ 			LB_LINUX_FLAVOURS_WITH_ARCH="${LB_LINUX_FLAVOURS_WITH_ARCH:-itanium}"
+ 			;;
+ 
++		loong64)
++			LB_LINUX_FLAVOURS_WITH_ARCH="${LB_LINUX_FLAVOURS_WITH_ARCH:-loong64}"
++			;;
++
+ 		powerpc)
+ 			LB_LINUX_FLAVOURS_WITH_ARCH="${LB_LINUX_FLAVOURS_WITH_ARCH:-powerpc64 powerpc}"
+ 			;;
+diff -uNr a/scripts/build/binary_grub_cfg b/scripts/build/binary_grub_cfg
+--- a/scripts/build/binary_grub_cfg	2023-05-02 18:56:24.000000000 +0800
++++ b/scripts/build/binary_grub_cfg	2023-05-25 21:18:08.000000000 +0800
+@@ -39,7 +39,7 @@
+ Acquire_lockfile
+ 
+ # Check architecture
+-Check_architectures amd64 i386 arm64
++Check_architectures amd64 i386 arm64 loong64
+ Check_crossarchitectures
+ 
+ _TARGET="binary/boot/grub"
+diff -uNr a/scripts/build/binary_grub-efi b/scripts/build/binary_grub-efi
+--- a/scripts/build/binary_grub-efi	2023-05-02 18:56:24.000000000 +0800
++++ b/scripts/build/binary_grub-efi	2023-05-25 21:26:06.000000000 +0800
+@@ -43,7 +43,7 @@
+ Acquire_lockfile
+ 
+ # Check architecture
+-Check_architectures amd64 i386 arm64 armhf
++Check_architectures amd64 i386 arm64 armhf loong64
+ Check_crossarchitectures
+ 
+ # Checking depends
+@@ -58,6 +58,9 @@
+ 	armhf)
+ 		Check_package chroot /usr/lib/grub/arm-efi/configfile.mod grub-efi-arm-bin
+ 		;;
++	loong64)
++		Check_package chroot /usr/lib/grub/loongarch64-efi/configfile.mod grub-efi-loong64-bin
++		;;
+ esac
+ Check_package chroot /usr/bin/grub-mkimage grub-common
+ Check_package chroot /usr/bin/mcopy mtools
+@@ -87,6 +90,12 @@
+ 		_SB_EFI_NAME="arm"
+ 		_SB_EFI_DEB="arm"
+ 		;;
++	loong64)
++		_SB_EFI_PLATFORM="loongarch64"
++		_SB_EFI_NAME="loongarch64"
++		_SB_EFI_DEB="loong64"
++		;;
++
+ esac
+ 
+ _PRE_SB_PACKAGES="${_LB_PACKAGES}"
+@@ -218,6 +227,11 @@
+ 		gen_efi_boot_img "arm-efi" "arm" "debian-live/arm"
+ 		PATH="\${PRE_EFI_IMAGE_PATH}"
+ 		;;
++	loong64)
++		gen_efi_boot_img "loongarch64-efi" "loongarch64" "debian-live/loong64"
++		PATH="\${PRE_EFI_IMAGE_PATH}"
++		;;
++
+ esac
+ 
+ 
+@@ -299,6 +313,7 @@
+ rm -f chroot/grub-efi-temp/bootnetx64.efi
+ rm -f chroot/grub-efi-temp/bootnetaa64.efi
+ rm -f chroot/grub-efi-temp/bootnetarm.efi
++rm -f chroot/grub-efi-temp/bootnetloongarch64.efi
+ 
+ mkdir -p binary
+ cp -a chroot/grub-efi-temp/* binary/
+@@ -306,6 +321,7 @@
+ rm -rf chroot/grub-efi-temp-i386-efi
+ rm -rf chroot/grub-efi-temp-arm64-efi
+ rm -rf chroot/grub-efi-temp-arm-efi
++rm -rf chroot/grub-efi-temp-loong64-efi
+ rm -rf chroot/grub-efi-temp-cfg
+ rm -rf chroot/grub-efi-temp
+ 
+diff -uNr a/scripts/build/binary_rootfs b/scripts/build/binary_rootfs
+--- a/scripts/build/binary_rootfs	2023-05-02 18:56:24.000000000 +0800
++++ b/scripts/build/binary_rootfs	2023-05-25 21:19:27.000000000 +0800
+@@ -33,7 +33,7 @@
+ Acquire_lockfile
+ 
+ case "${LB_ARCHITECTURE}" in
+-	amd64|i386)
++	amd64|i386|loong64)
+ 		LINUX="vmlinuz"
+ 		;;
+ 
+diff -uNr a/scripts/build/installer_debian-installer b/scripts/build/installer_debian-installer
+--- a/scripts/build/installer_debian-installer	2023-05-02 20:30:16.000000000 +0800
++++ b/scripts/build/installer_debian-installer	2023-05-25 21:31:47.000000000 +0800
+@@ -338,7 +338,7 @@
+ if [ "${LB_DEBIAN_INSTALLER_GUI}" = "true" ]
+ then
+ 	case "${LB_ARCHITECTURE}" in
+-		amd64|i386)
++		amd64|i386|loong64)
+ 			DOWNLOAD_GTK_INSTALLER=true
+ 			;;
+ 
+@@ -380,6 +380,13 @@
+ 			DI_REQ_PACKAGES="yaboot"
+ 			DI_PACKAGES="linux-image-powerpc linux-image-powerpc64 linux-image-powerpc-smp"
+ 			;;
++		loong64)
++			DI_REQ_PACKAGES="grub-efi-loong64 efibootmgr" # UEFI (required for d-i, includes suggested packages)
++			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} efibootmgr grub-efi-loong64 grub-efi-loong64-bin grub2-common mokutil cryptsetup cryptsetup-initramfs keyutils" # UEFI (required by Calamares)
++			DI_PACKAGES="linux-image-loong64"
++			;;
++
++		
+ 	esac
+ 
+ 	DI_PACKAGES="${DI_PACKAGES} busybox cryptsetup mdadm lvm2 xfsprogs jfsutils"

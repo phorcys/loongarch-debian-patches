@@ -1,0 +1,88 @@
+diff -uNr a/debian/control b/debian/control
+--- a/debian/control	2022-12-30 23:46:01.000000000 +0800
++++ b/debian/control	2023-05-12 00:47:42.000000000 +0800
+@@ -3,17 +3,17 @@
+ Priority: optional
+ Maintainer: Debian Qt/KDE Maintainers <debian-qt-kde@lists.debian.org>
+ Uploaders: Patrick Franz <deltaone@debian.org>
+-Build-Depends: clang-15,
++Build-Depends: clang-16,
+                cmake (>= 3.24~),
+                debhelper-compat (= 13),
+-               libclang-15-dev,
++               libclang-16-dev,
+                libgl-dev,
+                liblitehtml-dev (>= 0.6~),
+                libqt6opengl6-dev (>= 6.4.2+dfsg~),
+                libssl-dev,
+                libvulkan-dev [linux-any],
+                libxcb-xkb-dev,
+-               llvm-15-dev,
++               llvm-16-dev,
+                ninja-build,
+                pkg-config,
+                pkg-kde-tools,
+diff -uNr a/debian/patches/fix-clang-16.patch b/debian/patches/fix-clang-16.patch
+--- a/debian/patches/fix-clang-16.patch	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/fix-clang-16.patch	2023-05-12 19:41:13.000000000 +0800
+@@ -0,0 +1,54 @@
++Description: fix clang-16
++  https://github.com/qt/qttools/commit/87fac2de7378963e753a847da667d52d4ba95bff
++ TODO: Put a short summary on the line above and replace this paragraph
++ with a longer explanation of this change. Complete the meta-information
++ with other relevant fields (see below for details). To make it easier, the
++ information below has been extracted from the changelog. Adjust it or drop
++ it.
++ .
++ qt6-tools (6.4.2-1.ulb1) unstable; urgency=medium
++ .
++   * Non-maintainer upload.
++   * bump LLVM to llvm-16 clang-16 for loong64
++Author: root <root@debian-loongarch>
++
++---
++The information above should follow the Patch Tagging Guidelines, please
++checkout https://dep.debian.net/deps/dep3/ to learn about the format. Here
++are templates for supplementary fields that you might want to add:
++
++Origin: (upstream|backport|vendor|other), (<patch-url>|commit:<commit-id>)
++Bug: <upstream-bugtracker-url>
++Bug-Debian: https://bugs.debian.org/<bugnumber>
++Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
++Forwarded: (no|not-needed|<patch-forwarded-url>)
++Applied-Upstream: <version>, (<commit-url>|commit:<commid-id>)
++Reviewed-By: <name and email of someone who approved/reviewed the patch>
++Last-Update: 2023-05-12
++
++--- qt6-tools-6.4.2.orig/src/linguist/lupdate/lupdatepreprocessoraction.cpp
+++++ qt6-tools-6.4.2/src/linguist/lupdate/lupdatepreprocessoraction.cpp
++@@ -157,7 +157,9 @@ void LupdatePPCallbacks::SourceRangeSkip
++ void LupdatePPCallbacks::InclusionDirective(clang::SourceLocation /*hashLoc*/,
++     const clang::Token & /*includeTok*/, clang::StringRef /*fileName*/, bool /*isAngled*/,
++     clang::CharSourceRange /*filenameRange*/,
++-#if (LUPDATE_CLANG_VERSION >= LUPDATE_CLANG_VERSION_CHECK(15,0,0))
+++#if (LUPDATE_CLANG_VERSION >= LUPDATE_CLANG_VERSION_CHECK(16,0,0))
+++    const clang::OptionalFileEntryRef file,
+++#elif (LUPDATE_CLANG_VERSION >= LUPDATE_CLANG_VERSION_CHECK(15,0,0))
++     const clang::Optional<clang::FileEntryRef> file,
++ #else
++     const clang::FileEntry *file,
++--- qt6-tools-6.4.2.orig/src/linguist/lupdate/lupdatepreprocessoraction.h
+++++ qt6-tools-6.4.2/src/linguist/lupdate/lupdatepreprocessoraction.h
++@@ -52,7 +52,9 @@ private:
++     void InclusionDirective(clang::SourceLocation /*hashLoc*/, const clang::Token &/*includeTok*/,
++                             clang::StringRef /*fileName*/, bool /*isAngled*/,
++                             clang::CharSourceRange /*filenameRange*/,
++-#if (LUPDATE_CLANG_VERSION >= LUPDATE_CLANG_VERSION_CHECK(15,0,0))
+++#if (LUPDATE_CLANG_VERSION >= LUPDATE_CLANG_VERSION_CHECK(16,0,0))
+++                            const clang::OptionalFileEntryRef file,
+++#elif (LUPDATE_CLANG_VERSION >= LUPDATE_CLANG_VERSION_CHECK(15,0,0))
++                             const clang::Optional<clang::FileEntryRef> file,
++ #else
++                             const clang::FileEntry *file,
+diff -uNr a/debian/patches/series b/debian/patches/series
+--- a/debian/patches/series	2022-12-30 23:46:01.000000000 +0800
++++ b/debian/patches/series	2023-05-12 19:40:49.000000000 +0800
+@@ -1 +1,2 @@
+ fix-build-with-system-litehtml.patch
++fix-clang-16.patch

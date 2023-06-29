@@ -1,0 +1,119 @@
+diff -uNr a/debian/patches/fix-gcc13.patch b/debian/patches/fix-gcc13.patch
+--- a/debian/patches/fix-gcc13.patch	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/fix-gcc13.patch	2023-05-17 23:04:11.000000000 +0800
+@@ -0,0 +1,18 @@
++diff --git a/Source/ThirdParty/ANGLE/src/common/mathutil.h b/Source/ThirdParty/ANGLE/src/common/mathutil.h
++index 7959da8bdcbc8..b358110114aa4 100644
++--- a/Source/ThirdParty/ANGLE/src/common/mathutil.h
+++++ b/Source/ThirdParty/ANGLE/src/common/mathutil.h
++@@ -12,10 +12,11 @@
++ #include "common/debug.h"
++ #include "common/platform.h"
++ 
++-#include <limits>
++ #include <algorithm>
++-#include <string.h>
+++#include <limits>
+++#include <stdint.h>
++ #include <stdlib.h>
+++#include <string.h>
++ 
++ namespace gl
++ {
+diff -uNr a/debian/patches/series b/debian/patches/series
+--- a/debian/patches/series	2023-01-13 16:01:27.000000000 +0800
++++ b/debian/patches/series	2023-05-17 23:04:11.000000000 +0800
+@@ -7,3 +7,5 @@
+ glib_2.68.diff
+ jscore_big_endian.diff
+ icu_68.diff
++support-loong64.patch
++fix-gcc13.patch
+diff -uNr a/debian/patches/support-loong64.patch b/debian/patches/support-loong64.patch
+--- a/debian/patches/support-loong64.patch	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/support-loong64.patch	2023-05-17 23:04:11.000000000 +0800
+@@ -0,0 +1,84 @@
++Description: <short summary of the patch>
++ TODO: Put a short summary on the line above and replace this paragraph
++ with a longer explanation of this change. Complete the meta-information
++ with other relevant fields (see below for details). To make it easier, the
++ information below has been extracted from the changelog. Adjust it or drop
++ it.
++ .
++ qtwebkit-opensource-src (5.212.0~alpha4-30.ulb1) unstable; urgency=medium
++ .
++   * Non-maintainer upload.
++   * bump version
++Author: root <root@debian-loongarch>
++
++---
++The information above should follow the Patch Tagging Guidelines, please
++checkout https://dep.debian.net/deps/dep3/ to learn about the format. Here
++are templates for supplementary fields that you might want to add:
++
++Origin: (upstream|backport|vendor|other), (<patch-url>|commit:<commit-id>)
++Bug: <upstream-bugtracker-url>
++Bug-Debian: https://bugs.debian.org/<bugnumber>
++Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
++Forwarded: (no|not-needed|<patch-forwarded-url>)
++Applied-Upstream: <version>, (<commit-url>|commit:<commid-id>)
++Reviewed-By: <name and email of someone who approved/reviewed the patch>
++Last-Update: 2023-05-17
++
++--- qtwebkit-opensource-src-5.212.0~alpha4.orig/CMakeLists.txt
+++++ qtwebkit-opensource-src-5.212.0~alpha4/CMakeLists.txt
++@@ -85,6 +85,8 @@ elseif (LOWERCASE_CMAKE_SYSTEM_PROCESSOR
++     set(WTF_CPU_S390X 1)
++ elseif (LOWERCASE_CMAKE_SYSTEM_PROCESSOR MATCHES "riscv64")
++     set(WTF_CPU_RISCV64 1)
+++elseif (LOWERCASE_CMAKE_SYSTEM_PROCESSOR MATCHES "loongarch64")
+++    set(WTF_CPU_LOONGARCH64 1)
++ else ()
++     message(FATAL_ERROR "Unknown CPU '${LOWERCASE_CMAKE_SYSTEM_PROCESSOR}'")
++ endif ()
++--- qtwebkit-opensource-src-5.212.0~alpha4.orig/Source/JavaScriptCore/CMakeLists.txt
+++++ qtwebkit-opensource-src-5.212.0~alpha4/Source/JavaScriptCore/CMakeLists.txt
++@@ -1288,6 +1288,7 @@ elseif (WTF_CPU_S390X)
++ elseif (WTF_CPU_MIPS)
++ elseif (WTF_CPU_SH4)
++ elseif (WTF_CPU_RISCV64)
+++elseif (WTF_CPU_LOONGARCH64)
++ elseif (WTF_CPU_X86)
++ elseif (WTF_CPU_X86_64)
++     if (MSVC AND ENABLE_JIT)
++--- qtwebkit-opensource-src-5.212.0~alpha4.orig/Source/WTF/wtf/Platform.h
+++++ qtwebkit-opensource-src-5.212.0~alpha4/Source/WTF/wtf/Platform.h
++@@ -181,6 +181,12 @@
++ #define WTF_CPU_RISCV64 1
++ #endif
++ 
+++/* CPU(LOONGARCH64) - LOONGARCH64 */
+++#if defined(__loongarch64)
+++#define WTF_CPU_LOONGARCH64 1
+++#endif
+++
+++
++ /* CPU(ARM64) - Apple */
++ #if (defined(__arm64__) && defined(__APPLE__)) || defined(__aarch64__)
++ #define WTF_CPU_ARM64 1
++@@ -713,7 +719,8 @@
++     || CPU(MIPS64) \
++     || CPU(PPC64) \
++     || CPU(PPC64LE) \
++-    || CPU(RISCV64)
+++    || CPU(RISCV64) \
+++    || CPU(LOONGARCH64)
++ #define USE_JSVALUE64 1
++ #else
++ #define USE_JSVALUE32_64 1
++--- qtwebkit-opensource-src-5.212.0~alpha4.orig/Source/WTF/wtf/dtoa/utils.h
+++++ qtwebkit-opensource-src-5.212.0~alpha4/Source/WTF/wtf/dtoa/utils.h
++@@ -49,7 +49,7 @@
++ defined(__ARMEL__) || \
++ defined(_MIPS_ARCH_MIPS32R2)
++ #define DOUBLE_CONVERSION_CORRECT_DOUBLE_OPERATIONS 1
++-#elif CPU(MIPS) || CPU(MIPS64) || CPU(PPC) || CPU(PPC64) || CPU(PPC64LE) || CPU(SH4) || CPU(S390) || CPU(S390X) || CPU(IA64) || CPU(ALPHA) || CPU(ARM64) || CPU(HPPA) || CPU(RISCV64)
+++#elif CPU(MIPS) || CPU(MIPS64) || CPU(PPC) || CPU(PPC64) || CPU(PPC64LE) || CPU(SH4) || CPU(S390) || CPU(S390X) || CPU(IA64) || CPU(ALPHA) || CPU(ARM64) || CPU(HPPA) || CPU(RISCV64) || CPU(LOONGARCH64)
++ #define DOUBLE_CONVERSION_CORRECT_DOUBLE_OPERATIONS 1
++ #elif defined(_M_IX86) || defined(__i386__)
++ #if defined(_WIN32)

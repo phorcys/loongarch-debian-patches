@@ -1,0 +1,55 @@
+diff -uNr a/debian/patches/series b/debian/patches/series
+--- a/debian/patches/series	2022-03-10 09:04:00.000000000 +0800
++++ b/debian/patches/series	2023-06-23 04:22:21.000000000 +0800
+@@ -1,2 +1,3 @@
+ 2001_dont-build-with-werror.patch
+ 0001-src-Don-t-steal-a-pending-dbus-call-more-then-once.patch
++support-loong64.patch
+diff -uNr a/debian/patches/support-loong64.patch b/debian/patches/support-loong64.patch
+--- a/debian/patches/support-loong64.patch	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/support-loong64.patch	2023-06-23 04:22:21.000000000 +0800
+@@ -0,0 +1,44 @@
++Description: <short summary of the patch>
++ TODO: Put a short summary on the line above and replace this paragraph
++ with a longer explanation of this change. Complete the meta-information
++ with other relevant fields (see below for details). To make it easier, the
++ information below has been extracted from the changelog. Adjust it or drop
++ it.
++ .
++ dbus-cpp (5.0.3-4) unstable; urgency=medium
++ .
++   [ Mike Gabriel ]
++   * debian/: Update upstream Git repo URL.
++ .
++   [ Anton Gladky ]
++   * Add debian/.gitlab-ci.yml
++ .
++   [ Marius Gripsgard ]
++   * [debian/*.symbols] Mark symbols optional on LTO builds
++     (will be optimized out)
++Author: Marius Gripsgard <marius@ubports.com>
++
++---
++The information above should follow the Patch Tagging Guidelines, please
++checkout https://dep.debian.net/deps/dep3/ to learn about the format. Here
++are templates for supplementary fields that you might want to add:
++
++Origin: (upstream|backport|vendor|other), (<patch-url>|commit:<commit-id>)
++Bug: <upstream-bugtracker-url>
++Bug-Debian: https://bugs.debian.org/<bugnumber>
++Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
++Forwarded: (no|not-needed|<patch-forwarded-url>)
++Applied-Upstream: <version>, (<commit-url>|commit:<commid-id>)
++Reviewed-By: <name and email of someone who approved/reviewed the patch>
++Last-Update: 2023-06-22
++
++--- dbus-cpp-5.0.3.orig/include/core/dbus/argument_type.h
+++++ dbus-cpp-5.0.3/include/core/dbus/argument_type.h
++@@ -21,6 +21,7 @@
++ #include <map>
++ #include <ostream>
++ #include <string>
+++#include <cstdint>
++ 
++ #include <dbus/dbus.h>
++ 

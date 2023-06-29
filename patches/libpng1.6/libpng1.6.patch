@@ -1,0 +1,681 @@
+diff -uNr a/debian/patches/series b/debian/patches/series
+--- a/debian/patches/series	2022-11-26 22:18:36.000000000 +0800
++++ b/debian/patches/series	2023-06-23 23:13:50.000000000 +0800
+@@ -1,2 +1,3 @@
+ libpng-config.patch
+ #libpng-1.6.39-apng.patch
++#support-loong64-SIMD.patch
+diff -uNr a/debian/patches/support-loong64-SIMD.patch b/debian/patches/support-loong64-SIMD.patch
+--- a/debian/patches/support-loong64-SIMD.patch	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/support-loong64-SIMD.patch	2023-06-05 00:25:07.000000000 +0800
+@@ -0,0 +1,670 @@
++Description: <short summary of the patch>
++ TODO: Put a short summary on the line above and replace this paragraph
++ with a longer explanation of this change. Complete the meta-information
++ with other relevant fields (see below for details). To make it easier, the
++ information below has been extracted from the changelog. Adjust it or drop
++ it.
++ .
++ libpng1.6 (1.6.39-2) unstable; urgency=medium
++ .
++   [ Helmut Grohne ]
++   * Support the noudeb build profile. (Closes: #1024944)
++ .
++   [ Gianfranco Costamagna ]
++   * Upload to sid
++Author: Helmut Grohne <helmut@subdivi.de>
++Bug-Debian: https://bugs.debian.org/1024944
++
++---
++The information above should follow the Patch Tagging Guidelines, please
++checkout https://dep.debian.net/deps/dep3/ to learn about the format. Here
++are templates for supplementary fields that you might want to add:
++
++Origin: (upstream|backport|vendor|other), (<patch-url>|commit:<commit-id>)
++Bug: <upstream-bugtracker-url>
++Bug-Debian: https://bugs.debian.org/<bugnumber>
++Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
++Forwarded: (no|not-needed|<patch-forwarded-url>)
++Applied-Upstream: <version>, (<commit-url>|commit:<commid-id>)
++Reviewed-By: <name and email of someone who approved/reviewed the patch>
++Last-Update: 2023-06-04
++
++--- libpng1.6-1.6.39.orig/Makefile.am
+++++ libpng1.6-1.6.39/Makefile.am
++@@ -98,6 +98,12 @@ libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_SO
++ 	arm/palette_neon_intrinsics.c
++ endif
++ 
+++if PNG_LOONGARCH_LSX
+++libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_SOURCES = loongarch-lsx/loongarch_lsx_init.c\
+++	loongarch-lsx/filter_lsx_intrinsics.c
+++libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_CFLAGS = -mlsx
+++endif
+++
++ if PNG_MIPS_MSA
++ libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_SOURCES += mips/mips_init.c\
++ 	mips/filter_msa_intrinsics.c
++--- libpng1.6-1.6.39.orig/configure.ac
+++++ libpng1.6-1.6.39/configure.ac
++@@ -316,6 +316,9 @@ AC_ARG_ENABLE([hardware-optimizations],
++          enable_intel_sse=no
++          AC_DEFINE([PNG_INTEL_SSE_OPT], [0],
++            [Disable INTEL_SSE optimizations])
+++         enable_loongarch_lsx=no
+++         AC_DEFINE([PNG_LOONGARCH_LSX_OPT], [0],
+++           [Disable LOONGARCH_LSX optimizations])
++          ;;
++       *)
++          # allow enabling hardware optimization on any system:
++@@ -340,6 +343,11 @@ AC_ARG_ENABLE([hardware-optimizations],
++               AC_DEFINE([PNG_POWERPC_VSX_OPT], [2],
++                 [Enable POWERPC VSX optimizations])
++               ;;
+++            loongarch64)
+++              enable_loongarch_lsx=yes
+++              AC_DEFINE([PNG_LOONGARCH_LSX_OPT], [1],
+++                [Enable LOONGARCH_LSX optimizations])
+++              ;;
++          esac
++          ;;
++    esac])
++@@ -517,6 +525,69 @@ AM_CONDITIONAL([PNG_POWERPC_VSX],
++       powerpc*|ppc64*) : ;;
++     esac])
++ 
+++# LOONGARCH
+++# ===
+++#
+++# LOONGARCH LSX (SIMD) support
+++
+++if test "$LSX_CFLAGS" = ''; then
+++    LSX_CFLAGS="-mlsx"
+++fi
+++
+++compiler_support_loongarch_lsx=no
+++AC_MSG_CHECKING(whether to use loongarch LSX intrinsics)
+++save_CFLAGS=$CFLAGS
+++CFLAGS="$CFLAGS $LSX_CFLAGS"
+++AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+++#include<lsxintrin.h>
+++int main(){
+++    __m128i a, b, c;
+++    a = __lsx_vadd_w(b, c);
+++    return 0;
+++}]])],compiler_support_loongarch_lsx=yes)
+++CFLAGS=$save_CFLAGS
+++AC_MSG_RESULT($compiler_support_loongarch_lsx)
+++
+++AC_ARG_ENABLE([loongarch-lsx],
+++   AS_HELP_STRING([[[--enable-loongarch-lsx]]],
+++      [Enable LOONGARCH LSX optimizations: =no/off, yes/on:]
+++      [no/off: disable the optimizations;]
+++      [yes/on: turn on unconditionally.]
+++      [If not specified: determined by the compiler.]),
+++   [case "$enableval" in
+++      no|off)
+++         # disable the default enabling on __loongarch_simd systems:
+++         AC_DEFINE([PNG_LOONGARCH_LSX_OPT], [0],
+++                   [Disable LOONGARCH LSX optimizations])
+++         # Prevent inclusion of the assembler files below:
+++         enable_loongarch_lsx=no;;
+++      yes|on)
+++         AC_DEFINE([PNG_LOONGARCH_LSX_OPT], [1],
+++                   [Enable LOONGARCH LSX optimizations])
+++         ;;
+++      *)
+++         AC_MSG_ERROR([--enable-loongarch-lsx=${enable_loongarch_lsx}: invalid value])
+++   esac])
+++
+++if test "$enable_loongarch_lsx" != 'no'; then
+++   if test $compiler_support_loongarch_lsx = yes; then
+++      AC_DEFINE([PNG_LOONGARCH_LSX_OPT], [1], [Enable LOONGARCH LSX optimizations])
+++   else
+++      AC_MSG_WARN([Compiler does not support loongarch LSX.])
+++   fi
+++fi
+++
+++# Add LOONGARCH specific files to all builds where the host_cpu is loongarch64 ('loongarch64*') or
+++# where LOONGARCH optimizations were explicitly requested (this allows a fallback if a
+++# future host CPU does not match 'loongarch64*')
+++
+++AM_CONDITIONAL([PNG_LOONGARCH_LSX],
+++   [test "$enable_loongarch_lsx" != 'no' && test $compiler_support_loongarch_lsx = yes &&
+++    case "$host_cpu" in
+++      loongarch64*) :;;
+++      *)    test "$enable_loongarch_lsx" != '';;
+++    esac])
+++
++ AC_MSG_NOTICE([[Extra options for compiler: $PNG_COPTS]])
++ 
++ # Config files, substituting as above
++--- /dev/null
+++++ libpng1.6-1.6.39/loongarch-lsx/filter_lsx_intrinsics.c
++@@ -0,0 +1,412 @@
+++/* filter_lsx_intrinsics.c - LSX optimized filter functions
+++ *
+++ * Copyright (c) 2021 Loongson Technology Corporation Limited
+++ * All rights reserved.
+++ * Copyright (c) 2018 Cosmin Truta
+++ * Copyright (c) 2016 Glenn Randers-Pehrson
+++ * Contributed by Jin Bo (jinbo@loongson.cn)
+++ *
+++ * This code is released under the libpng license.
+++ * For conditions of distribution and use, see the disclaimer
+++ * and license in png.h
+++ */
+++
+++#include "../pngpriv.h"
+++
+++#ifdef PNG_READ_SUPPORTED
+++
+++#if PNG_LOONGARCH_LSX_IMPLEMENTATION == 1 /* intrinsics code from pngpriv.h */
+++
+++#include <lsxintrin.h>
+++
+++#define LSX_LD(psrc) __lsx_vld((psrc), 0)
+++
+++#define LSX_LD_2(psrc, stride, out0, out1) \
+++{                                          \
+++   out0 = LSX_LD(psrc);                    \
+++   out1 = LSX_LD(psrc + stride);           \
+++}
+++
+++#define LSX_LD_4(psrc, stride, out0, out1, out2, out3) \
+++{                                                      \
+++   LSX_LD_2(psrc, stride, out0, out1);                 \
+++   LSX_LD_2(psrc + stride * 2, stride, out2, out3);    \
+++}
+++
+++#define LSX_ST(in, pdst) __lsx_vst(in, (pdst), 0)
+++
+++#define LSX_ST_2(in0, in1, pdst, stride) \
+++{                                        \
+++   LSX_ST(in0, pdst);                    \
+++   LSX_ST(in1, pdst + stride);           \
+++}
+++
+++#define LSX_ST_4(in0, in1, in2, in3, pdst, stride) \
+++{                                                  \
+++   LSX_ST_2(in0, in1, pdst, stride);               \
+++   LSX_ST_2(in2, in3, pdst + stride * 2, stride);  \
+++}
+++
+++#define LSX_ADD_B(in0, in1, out0) \
+++{                                 \
+++   out0 = __lsx_vadd_b(in0, in1); \
+++}
+++
+++#define LSX_ADD_B_2(in0, in1, in2, in3, out0, out1) \
+++{                                                   \
+++   LSX_ADD_B(in0, in1, out0);                       \
+++   LSX_ADD_B(in2, in3, out1);                       \
+++}
+++
+++#define LSX_ADD_B_4(in0, in1, in2, in3, in4, in5,     \
+++                    in6, in7, out0, out1, out2, out3) \
+++{                                                     \
+++   LSX_ADD_B_2(in0, in1, in2, in3, out0, out1);       \
+++   LSX_ADD_B_2(in4, in5, in6, in7, out2, out3);       \
+++}
+++
+++#define LSX_ABS_B_3(in0, in1, in2, out0, out1, out2) \
+++{                                                    \
+++   out0 = __lsx_vadda_h(in0, zero);                  \
+++   out1 = __lsx_vadda_h(in1, zero);                  \
+++   out2 = __lsx_vadda_h(in2, zero);                  \
+++}
+++
+++#define LSX_ILVL_B(in_h, in_l, out0)  \
+++{                                     \
+++   out0 = __lsx_vilvl_b(in_h, in_l);  \
+++}
+++
+++#define LSX_ILVL_B_2(in0_h, in0_l, in1_h, in1_l, out0, out1) \
+++{                                                            \
+++   LSX_ILVL_B(in0_h, in0_l, out0);                           \
+++   LSX_ILVL_B(in1_h, in1_l, out1);                           \
+++}
+++
+++#define LSX_HSUB_HU_BU_2(in0, in1, out0, out1) \
+++{                                              \
+++   out0 = __lsx_vhsubw_hu_bu(in0, in0);        \
+++   out1 = __lsx_vhsubw_hu_bu(in1, in1);        \
+++}
+++
+++#define LSX_CMP_PICK_SMALLER(in0, in1, in2, in3, in4, in5, out0) \
+++{                                                                \
+++   __m128i _cmph, _cmpb, _in0, _in3;                             \
+++   _cmph = __lsx_vslt_h(in1, in0);                               \
+++   _cmpb = __lsx_vpickev_b(_cmph, _cmph);                        \
+++   _in0  = __lsx_vmin_bu(in0,in1);                               \
+++   _in3  = __lsx_vbitsel_v(in3, in4, _cmpb);                     \
+++   _cmph = __lsx_vslt_h(in2, _in0);                              \
+++   _cmpb = __lsx_vpickev_b(_cmph, _cmph);                        \
+++   _in3  = __lsx_vbitsel_v(_in3, in5, _cmpb);                    \
+++   out0  = __lsx_vadd_b(out0, _in3);                             \
+++}
+++
+++void png_read_filter_row_up_lsx(png_row_infop row_info, png_bytep row,
+++                                png_const_bytep prev_row)
+++{
+++   size_t n = row_info->rowbytes;
+++   png_bytep rp = row;
+++   png_const_bytep pp = prev_row;
+++   __m128i vec_0, vec_1, vec_2, vec_3;
+++   __m128i vec_4, vec_5, vec_6, vec_7;
+++
+++   while (n >= 64)
+++   {
+++      LSX_LD_4(rp, 16, vec_0, vec_1, vec_2, vec_3);
+++      LSX_LD_4(pp, 16, vec_4, vec_5, vec_6, vec_7);
+++      pp += 64;
+++      LSX_ADD_B_4(vec_0 ,vec_4, vec_1, vec_5, vec_2, vec_6,
+++                  vec_3, vec_7, vec_0, vec_1, vec_2, vec_3);
+++      LSX_ST_4(vec_0, vec_1, vec_2, vec_3, rp, 16);
+++      rp += 64;
+++      n -= 64;
+++   }
+++   if (n & 63)
+++   {
+++      if (n >= 32)
+++      {
+++         LSX_LD_2(rp, 16, vec_0, vec_1);
+++         LSX_LD_2(pp, 16, vec_2, vec_3);
+++         pp += 32;
+++         LSX_ADD_B_2(vec_0, vec_2, vec_1, vec_3, vec_0, vec_1);
+++         LSX_ST_2(vec_0, vec_1, rp, 16);
+++         rp += 32;
+++         n -= 32;
+++      }
+++      if (n & 31)
+++      {
+++         if (n >= 16)
+++         {
+++            vec_0 = LSX_LD(rp);
+++            vec_1 = LSX_LD(pp);
+++            pp += 16;
+++            LSX_ADD_B(vec_0, vec_1, vec_0);
+++            LSX_ST(vec_0, rp);
+++            rp += 16;
+++            n -= 16;
+++         }
+++         if (n >= 8)
+++         {
+++            vec_0 = __lsx_vldrepl_d(rp, 0);
+++            vec_1 = __lsx_vldrepl_d(pp, 0);
+++            vec_0 = __lsx_vadd_b(vec_0, vec_1);
+++            __lsx_vstelm_d(vec_0, rp, 0, 0);
+++            rp += 8;
+++            pp += 8;
+++            n -= 8;
+++         }
+++         while (n--)
+++         {
+++            *rp = *rp + *pp++;
+++            rp++;
+++         }
+++      }
+++   }
+++}
+++
+++void png_read_filter_row_sub3_lsx(png_row_infop row_info, png_bytep row,
+++                                  png_const_bytep prev_row)
+++{
+++   size_t n = row_info->rowbytes;
+++   png_uint_32 tmp;
+++   png_bytep nxt = row;
+++   __m128i vec_0, vec_1;
+++
+++   PNG_UNUSED(prev_row);
+++
+++   vec_0 = __lsx_vldrepl_w(nxt, 0);
+++   nxt += 3;
+++   n -= 3;
+++
+++   while (n >= 3)
+++   {
+++      vec_1 = __lsx_vldrepl_w(nxt, 0);
+++      vec_1 = __lsx_vadd_b(vec_1, vec_0);
+++      __lsx_vstelm_h(vec_1, nxt, 0, 0);
+++      vec_0 = vec_1;
+++      nxt += 2;
+++      __lsx_vstelm_b(vec_1, nxt, 0, 2);
+++      nxt += 1;
+++      n -= 3;
+++   }
+++
+++   row = nxt - 3;
+++   while (n--)
+++   {
+++      *nxt = *nxt + *row++;
+++      nxt++;
+++   }
+++}
+++
+++void png_read_filter_row_sub4_lsx(png_row_infop row_info, png_bytep row,
+++                                  png_const_bytep prev_row)
+++{
+++   size_t n = row_info->rowbytes;
+++   __m128i vec_0, vec_1;
+++
+++   PNG_UNUSED(prev_row);
+++
+++   vec_0 = __lsx_vldrepl_w(row, 0);
+++   row += 4;
+++   n -= 4;
+++
+++   while (n >= 4)
+++   {
+++      vec_1 = __lsx_vldrepl_w(row, 0);
+++      vec_1 = __lsx_vadd_b(vec_1, vec_0);
+++      __lsx_vstelm_w(vec_1, row, 0, 0);
+++      vec_0 = vec_1;
+++      row += 4;
+++      n -= 4;
+++   }
+++}
+++
+++void png_read_filter_row_avg3_lsx(png_row_infop row_info, png_bytep row,
+++                                  png_const_bytep prev_row)
+++{
+++   size_t n = row_info->rowbytes;
+++   png_bytep nxt = row;
+++   png_const_bytep prev_nxt = prev_row;
+++   __m128i vec_0, vec_1, vec_2;
+++
+++   vec_0 = __lsx_vldrepl_w(nxt, 0);
+++   vec_1 = __lsx_vldrepl_w(prev_nxt, 0);
+++   prev_nxt += 3;
+++   vec_1 = __lsx_vsrli_b(vec_1, 1);
+++   vec_1 = __lsx_vadd_b(vec_1, vec_0);
+++   __lsx_vstelm_h(vec_1, nxt, 0, 0);
+++   nxt += 2;
+++   __lsx_vstelm_b(vec_1, nxt, 0, 2);
+++   nxt += 1;
+++   n -= 3;
+++
+++   while (n >= 3)
+++   {
+++      vec_2 = vec_1;
+++      vec_0 = __lsx_vldrepl_w(nxt, 0);
+++      vec_1 = __lsx_vldrepl_w(prev_nxt, 0);
+++      prev_nxt += 3;
+++
+++      vec_1 = __lsx_vavg_bu(vec_1, vec_2);
+++      vec_1 = __lsx_vadd_b(vec_1, vec_0);
+++
+++      __lsx_vstelm_h(vec_1, nxt, 0, 0);
+++      nxt += 2;
+++      __lsx_vstelm_b(vec_1, nxt, 0, 2);
+++      nxt += 1;
+++      n -= 3;
+++   }
+++
+++   row = nxt - 3;
+++   while (n--)
+++   {
+++      vec_2 = __lsx_vldrepl_b(row, 0);
+++      row++;
+++      vec_0 = __lsx_vldrepl_b(nxt, 0);
+++      vec_1 = __lsx_vldrepl_b(prev_nxt, 0);
+++      prev_nxt++;
+++
+++      vec_1 = __lsx_vavg_bu(vec_1, vec_2);
+++      vec_1 = __lsx_vadd_b(vec_1, vec_0);
+++
+++      __lsx_vstelm_b(vec_1, nxt, 0, 0);
+++      nxt++;
+++   }
+++}
+++
+++void png_read_filter_row_avg4_lsx(png_row_infop row_info, png_bytep row,
+++                                  png_const_bytep prev_row)
+++{
+++   size_t n = row_info->rowbytes;
+++   __m128i vec_0, vec_1, vec_2;
+++
+++   vec_0 = __lsx_vldrepl_w(row, 0);
+++   vec_1 = __lsx_vldrepl_w(prev_row, 0);
+++   prev_row += 4;
+++   vec_1 = __lsx_vsrli_b(vec_1, 1);
+++   vec_1 = __lsx_vadd_b(vec_1, vec_0);
+++   __lsx_vstelm_w(vec_1, row, 0, 0);
+++   row += 4;
+++   n -= 4;
+++
+++   while (n >= 4)
+++   {
+++      vec_2 = vec_1;
+++      vec_0 = __lsx_vldrepl_w(row, 0);
+++      vec_1 = __lsx_vldrepl_w(prev_row, 0);
+++      prev_row += 4;
+++
+++      vec_1 = __lsx_vavg_bu(vec_1, vec_2);
+++      vec_1 = __lsx_vadd_b(vec_1, vec_0);
+++
+++      __lsx_vstelm_w(vec_1, row, 0, 0);
+++      row += 4;
+++      n -= 4;
+++   }
+++}
+++
+++void png_read_filter_row_paeth3_lsx(png_row_infop row_info,
+++                                    png_bytep row,
+++                                    png_const_bytep prev_row)
+++{
+++   size_t n = row_info->rowbytes;
+++   png_bytep nxt = row;
+++   png_const_bytep prev_nxt = prev_row;
+++   __m128i vec_a, vec_b, vec_c, vec_d;
+++   __m128i vec_pa, vec_pb, vec_pc;
+++   __m128i zero = {0};
+++
+++   vec_a = __lsx_vldrepl_w(nxt, 0);
+++   vec_b = __lsx_vldrepl_w(prev_nxt, 0);
+++   prev_nxt += 3;
+++   vec_d = __lsx_vadd_b(vec_a, vec_b);
+++   __lsx_vstelm_h(vec_d, nxt, 0, 0);
+++   nxt += 2;
+++   __lsx_vstelm_b(vec_d, nxt, 0, 2);
+++   nxt += 1;
+++   n -= 3;
+++
+++   while (n >= 3)
+++   {
+++      vec_a = vec_d;
+++      vec_c = vec_b;
+++      vec_b = __lsx_vldrepl_w(prev_nxt, 0);
+++      prev_nxt += 3;
+++      vec_d = __lsx_vldrepl_w(nxt, 0);
+++
+++      LSX_ILVL_B_2(vec_b, vec_c, vec_a, vec_c, vec_pa, vec_pb);
+++      LSX_HSUB_HU_BU_2(vec_pa, vec_pb, vec_pa, vec_pb);
+++      vec_pc = __lsx_vadd_h(vec_pa, vec_pb);
+++      LSX_ABS_B_3(vec_pa, vec_pb, vec_pc, vec_pa, vec_pb, vec_pc);
+++      LSX_CMP_PICK_SMALLER(vec_pa, vec_pb, vec_pc, vec_a, vec_b, vec_c, vec_d);
+++
+++      __lsx_vstelm_h(vec_d, nxt, 0, 0);
+++      nxt += 2;
+++      __lsx_vstelm_b(vec_d, nxt, 0, 2);
+++      nxt += 1;
+++      n -= 3;
+++   }
+++
+++   prev_row = prev_nxt - 3;
+++   row = nxt - 3;
+++   while (n--)
+++   {
+++      vec_a = __lsx_vldrepl_b(row, 0);
+++      row++;
+++      vec_b = __lsx_vldrepl_b(prev_nxt, 0);
+++      prev_nxt++;
+++      vec_c = __lsx_vldrepl_b(prev_row, 0);
+++      prev_row++;
+++      vec_d = __lsx_vldrepl_b(nxt, 0);
+++
+++      LSX_ILVL_B_2(vec_b, vec_c, vec_a, vec_c, vec_pa, vec_pb);
+++      LSX_HSUB_HU_BU_2(vec_pa, vec_pb, vec_pa, vec_pb);
+++      vec_pc = __lsx_vadd_h(vec_pa, vec_pb);
+++      LSX_ABS_B_3(vec_pa, vec_pb, vec_pc, vec_pa, vec_pb, vec_pc);
+++      LSX_CMP_PICK_SMALLER(vec_pa, vec_pb, vec_pc, vec_a, vec_b, vec_c, vec_d);
+++
+++      __lsx_vstelm_b(vec_d, nxt, 0, 0);
+++      nxt++;
+++   }
+++}
+++
+++void png_read_filter_row_paeth4_lsx(png_row_infop row_info,
+++                                    png_bytep row,
+++                                    png_const_bytep prev_row)
+++{
+++   size_t n = row_info->rowbytes;
+++   __m128i vec_a, vec_b, vec_c, vec_d;
+++   __m128i vec_pa, vec_pb, vec_pc;
+++   __m128i zero = {0};
+++
+++   vec_a = __lsx_vldrepl_w(row, 0);
+++   vec_b = __lsx_vldrepl_w(prev_row, 0);
+++   prev_row += 4;
+++   vec_d = __lsx_vadd_b(vec_a, vec_b);
+++   __lsx_vstelm_w(vec_d, row, 0, 0);
+++   row += 4;
+++   n -= 4;
+++
+++   while (n >= 4)
+++   {
+++      vec_a = vec_d;
+++      vec_c = vec_b;
+++      vec_b = __lsx_vldrepl_w(prev_row, 0);
+++      prev_row += 4;
+++      vec_d = __lsx_vldrepl_w(row, 0);
+++
+++      LSX_ILVL_B_2(vec_b, vec_c, vec_a, vec_c, vec_pa, vec_pb);
+++      LSX_HSUB_HU_BU_2(vec_pa, vec_pb, vec_pa, vec_pb);
+++      vec_pc = __lsx_vadd_h(vec_pa, vec_pb);
+++      LSX_ABS_B_3(vec_pa, vec_pb, vec_pc, vec_pa, vec_pb, vec_pc);
+++      LSX_CMP_PICK_SMALLER(vec_pa, vec_pb, vec_pc, vec_a, vec_b, vec_c, vec_d);
+++
+++      __lsx_vstelm_w(vec_d, row, 0, 0);
+++      row += 4;
+++      n -= 4;
+++   }
+++}
+++
+++#endif /* PNG_LOONGARCH_LSX_IMPLEMENTATION == 1 (intrinsics) */
+++#endif /* PNG_READ_SUPPORTED */
++--- /dev/null
+++++ libpng1.6-1.6.39/loongarch-lsx/loongarch_lsx_init.c
++@@ -0,0 +1,61 @@
+++/* loongarch_lsx_init.c - LSX optimized filter functions
+++ *
+++ * Copyright (c) 2021 Loongson Technology Corporation Limited
+++ * All rights reserved.
+++ * Contributed by Jin Bo <jinbo@loongson.cn>
+++ * Derived from mips/mips_init.c
+++ *
+++ * This code is released under the libpng license.
+++ * For conditions of distribution and use, see the disclaimer
+++ * and license in png.h
+++ */
+++
+++#include "../pngpriv.h"
+++
+++#ifdef PNG_READ_SUPPORTED
+++#if PNG_LOONGARCH_LSX_IMPLEMENTATION == 1
+++
+++#define LOONGARCH_CFG2 0x02
+++#define LOONGARCH_LSX 1<<6
+++
+++void
+++png_init_filter_functions_lsx(png_structp pp, unsigned int bpp)
+++{
+++   /* IMPORTANT: any new external functions used here must be declared using
+++    * PNG_INTERNAL_FUNCTION in ../pngpriv.h.  This is required so that the
+++    * 'prefix' option to configure works:
+++    *
+++    *    ./configure --with-libpng-prefix=foobar_
+++    *
+++    * Verify you have got this right by running the above command, doing a build
+++    * and examining pngprefix.h; it must contain a #define for every external
+++    * function you add.  (Notice that this happens automatically for the
+++    * initialization function.)
+++    */
+++
+++   /* runtime check */
+++
+++   png_uint_32 reg = 0;
+++
+++   __asm__ volatile("cpucfg %0, %1" : "+&r"(reg) : "r"(LOONGARCH_CFG2));
+++
+++   if (reg & LOONGARCH_LSX)
+++   {
+++      pp->read_filter[PNG_FILTER_VALUE_UP-1] = png_read_filter_row_up_lsx;
+++      if (bpp == 3)
+++      {
+++         pp->read_filter[PNG_FILTER_VALUE_SUB-1] = png_read_filter_row_sub3_lsx;
+++         pp->read_filter[PNG_FILTER_VALUE_AVG-1] = png_read_filter_row_avg3_lsx;
+++         pp->read_filter[PNG_FILTER_VALUE_PAETH-1] = png_read_filter_row_paeth3_lsx;
+++      }
+++      else if (bpp == 4)
+++      {
+++         pp->read_filter[PNG_FILTER_VALUE_SUB-1] = png_read_filter_row_sub4_lsx;
+++         pp->read_filter[PNG_FILTER_VALUE_AVG-1] = png_read_filter_row_avg4_lsx;
+++         pp->read_filter[PNG_FILTER_VALUE_PAETH-1] = png_read_filter_row_paeth4_lsx;
+++      }
+++   }
+++}
+++
+++#endif /* PNG_LOONGARCH_LSX_IMPLEMENTATION == 1 */
+++#endif /* PNG_READ_SUPPORTED */
++--- libpng1.6-1.6.39.orig/pngpriv.h
+++++ libpng1.6-1.6.39/pngpriv.h
++@@ -276,6 +276,12 @@
++ #  define PNG_POWERPC_VSX_IMPLEMENTATION 0
++ #endif
++ 
+++#if PNG_LOONGARCH_LSX_OPT > 0
+++#   define PNG_FILTER_OPTIMIZATIONS png_init_filter_functions_lsx
+++#   define PNG_LOONGARCH_LSX_IMPLEMENTATION 1
+++#else
+++#   define PNG_LOONGARCH_LSX_IMPLEMENTATION 0
+++#endif
++ 
++ /* Is this a build of a DLL where compilation of the object modules requires
++  * different preprocessor settings to those required for a simple library?  If
++@@ -1355,6 +1361,23 @@ PNG_INTERNAL_FUNCTION(void,png_read_filt
++     row_info, png_bytep row, png_const_bytep prev_row),PNG_EMPTY);
++ #endif
++ 
+++#if PNG_LOONGARCH_LSX_IMPLEMENTATION == 1
+++PNG_INTERNAL_FUNCTION(void,png_read_filter_row_up_lsx,(png_row_infop
+++    row_info, png_bytep row, png_const_bytep prev_row),PNG_EMPTY);
+++PNG_INTERNAL_FUNCTION(void,png_read_filter_row_sub3_lsx,(png_row_infop
+++    row_info, png_bytep row, png_const_bytep prev_row),PNG_EMPTY);
+++PNG_INTERNAL_FUNCTION(void,png_read_filter_row_sub4_lsx,(png_row_infop
+++    row_info, png_bytep row, png_const_bytep prev_row),PNG_EMPTY);
+++PNG_INTERNAL_FUNCTION(void,png_read_filter_row_avg3_lsx,(png_row_infop
+++    row_info, png_bytep row, png_const_bytep prev_row),PNG_EMPTY);
+++PNG_INTERNAL_FUNCTION(void,png_read_filter_row_avg4_lsx,(png_row_infop
+++    row_info, png_bytep row, png_const_bytep prev_row),PNG_EMPTY);
+++PNG_INTERNAL_FUNCTION(void,png_read_filter_row_paeth3_lsx,(png_row_infop
+++    row_info, png_bytep row, png_const_bytep prev_row),PNG_EMPTY);
+++PNG_INTERNAL_FUNCTION(void,png_read_filter_row_paeth4_lsx,(png_row_infop
+++    row_info, png_bytep row, png_const_bytep prev_row),PNG_EMPTY);
+++#endif
+++
++ /* Choose the best filter to use and filter the row data */
++ PNG_INTERNAL_FUNCTION(void,png_write_find_filter,(png_structrp png_ptr,
++     png_row_infop row_info),PNG_EMPTY);
++@@ -2094,6 +2117,11 @@ PNG_INTERNAL_FUNCTION(void, png_init_fil
++    (png_structp png_ptr, unsigned int bpp), PNG_EMPTY);
++ #endif
++ 
+++#if PNG_LOONGARCH_LSX_OPT > 0
+++PNG_INTERNAL_FUNCTION(void, png_init_filter_functions_lsx,
+++   (png_structp png_ptr, unsigned int bpp), PNG_EMPTY);
+++#endif
+++
++ #if PNG_MIPS_MSA_OPT > 0
++ PNG_INTERNAL_FUNCTION(void, png_init_filter_functions_msa,
++    (png_structp png_ptr, unsigned int bpp), PNG_EMPTY);

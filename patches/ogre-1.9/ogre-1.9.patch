@@ -1,0 +1,54 @@
+diff -uNr a/debian/patches/series b/debian/patches/series
+--- a/debian/patches/series	2022-11-16 06:07:30.000000000 +0800
++++ b/debian/patches/series	2023-06-20 15:28:27.000000000 +0800
+@@ -3,3 +3,4 @@
+ reproducible-remove-documentation-timestamp.patch
+ riscv64-support.patch
+ aa0219de16e95df61c0e81586f359d07aea35fe6.patch
++support-loong64.patch
+diff -uNr a/debian/patches/support-loong64.patch b/debian/patches/support-loong64.patch
+--- a/debian/patches/support-loong64.patch	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/support-loong64.patch	2023-06-20 15:27:47.000000000 +0800
+@@ -0,0 +1,42 @@
++Description: <short summary of the patch>
++ TODO: Put a short summary on the line above and replace this paragraph
++ with a longer explanation of this change. Complete the meta-information
++ with other relevant fields (see below for details). To make it easier, the
++ information below has been extracted from the changelog. Adjust it or drop
++ it.
++ .
++ ogre-1.9 (1.9.0+dfsg1-12) unstable; urgency=medium
++ .
++   * Bump Standards-Version to 4.2.1 (no changes needed)
++   * d/control: Use https in Homepage URL
++   * d/copyright: Use https in Format and Source URLs
++   * d/watch:
++     - Switch to version=4
++     - Update URL to use the most recent repository location
++Author: Manuel A. Fernandez Montecelo <mafm@debian.org>
++
++---
++The information above should follow the Patch Tagging Guidelines, please
++checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
++are templates for supplementary fields that you might want to add:
++
++Origin: <vendor|upstream|other>, <url of original patch>
++Bug: <url in upstream bugtracker>
++Bug-Debian: https://bugs.debian.org/<bugnumber>
++Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
++Forwarded: <no|not-needed|url proving that it has been forwarded>
++Reviewed-By: <name and email of someone who approved the patch>
++Last-Update: 2021-10-13
++
++--- ogre-1.9-1.9.0+dfsg1.orig/OgreMain/include/OgrePlatform.h
+++++ ogre-1.9-1.9.0+dfsg1/OgreMain/include/OgrePlatform.h
++@@ -166,7 +166,7 @@ namespace Ogre {
++ #endif
++ 
++     /* Find the arch type */
++-#if defined(__x86_64__) || defined(_M_X64) || defined(__powerpc64__) || defined(__alpha__) || defined(__ia64__) || defined(__s390__) || defined(__s390x__) || defined(__arm64__) || defined(__aarch64__) || defined(__mips64) || defined(__mips64_) || (defined(__riscv) && (__riscv_xlen == 64))
+++#if defined(__x86_64__) || defined(_M_X64) || defined(__powerpc64__) || defined(__alpha__) || defined(__ia64__) || defined(__s390__) || defined(__s390x__) || defined(__arm64__) || defined(__aarch64__) || defined(__mips64) || defined(__mips64_) || (defined(__riscv) && (__riscv_xlen == 64)) || defined (__loongarch64)
++ #   define OGRE_ARCH_TYPE OGRE_ARCHITECTURE_64
++ #else
++ #   define OGRE_ARCH_TYPE OGRE_ARCHITECTURE_32
++

@@ -1,0 +1,53 @@
+diff -uNr a/debian/patches/series b/debian/patches/series
+--- a/debian/patches/series	2022-11-29 03:39:58.000000000 +0800
++++ b/debian/patches/series	2023-05-31 22:48:46.000000000 +0800
+@@ -5,3 +5,4 @@
+ 06-spelling-errors.diff
+ 08-hurd.diff
+ 10-latex.diff
++support-loong64.patch
+diff -uNr a/debian/patches/support-loong64.patch b/debian/patches/support-loong64.patch
+--- a/debian/patches/support-loong64.patch	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/support-loong64.patch	2023-05-31 22:48:46.000000000 +0800
+@@ -0,0 +1,41 @@
++Description: <short summary of the patch>
++ TODO: Put a short summary on the line above and replace this paragraph
++ with a longer explanation of this change. Complete the meta-information
++ with other relevant fields (see below for details). To make it easier, the
++ information below has been extracted from the changelog. Adjust it or drop
++ it.
++ .
++ cfitsio (4.2.0-3) unstable; urgency=medium
++ .
++   * Update debian/patches/01-LDFLAGS.diff to build the binaries with the
++     correct LDFLAGS.
++Author: Aurelien Jarno <aurel32@debian.org>
++
++---
++The information above should follow the Patch Tagging Guidelines, please
++checkout https://dep.debian.net/deps/dep3/ to learn about the format. Here
++are templates for supplementary fields that you might want to add:
++
++Origin: (upstream|backport|vendor|other), (<patch-url>|commit:<commit-id>)
++Bug: <upstream-bugtracker-url>
++Bug-Debian: https://bugs.debian.org/<bugnumber>
++Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
++Forwarded: (no|not-needed|<patch-forwarded-url>)
++Applied-Upstream: <version>, (<commit-url>|commit:<commid-id>)
++Reviewed-By: <name and email of someone who approved/reviewed the patch>
++Last-Update: 2023-05-31
++
++--- cfitsio-4.2.0.orig/fitsio2.h
+++++ cfitsio-4.2.0/fitsio2.h
++@@ -151,6 +151,11 @@ extern int Fitsio_Pthread_Status;
++ #    error "can't handle long size given by __riscv_xlen"
++ #  endif
++ 
+++#elif defined(__loongarch64)
+++/* LoongArch is always little endian */
+++#define BYTESWAPPED TRUE
+++#define LONGSIZE 64
+++
++ /* ============================================================== */
++ /*  the following are all 32-bit byteswapped platforms            */
++ 

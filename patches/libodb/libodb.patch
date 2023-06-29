@@ -1,0 +1,12 @@
+diff -uNr a/debian/rules b/debian/rules
+--- a/debian/rules	2014-03-06 09:58:18.000000000 +0800
++++ b/debian/rules	2023-06-16 20:01:54.000000000 +0800
+@@ -9,6 +9,8 @@
+ 
+ DESTDIR=$(CURDIR)/debian/tmp/
+ 
++export DEB_CFLAGS_MAINT_APPEND  = -std=c++11
++export DEB_CXXFLAGS_MAINT_APPEND  = -std=c++11
+ override_dh_install:
+ 	dh_install
+ 	# remove extra copyright files

@@ -1,0 +1,1737 @@
+diff -uNr a/debian/control b/debian/control
+--- a/debian/control	2022-12-17 21:57:11.000000000 +0800
++++ b/debian/control	2023-06-16 13:06:35.000000000 +0800
+@@ -42,7 +42,7 @@
+ 
+ Package: dpdk
+ Section: admin
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Depends: lsb-base (>= 3.2-14),
+          pci.ids | hwdata,
+          pciutils,
+@@ -91,7 +91,7 @@
+  This package contains the runtime environment to run DPDK applications.
+ 
+ Package: librte-meta-baseband
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Depends: ${librte:Baseband},
+          ${misc:Depends},
+@@ -102,7 +102,7 @@
+  This is a metapackage to pull in all the librte baseband libraries.
+ 
+ Package: librte-meta-bus
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Depends: ${librte:Bus},
+          ${misc:Depends},
+@@ -113,7 +113,7 @@
+  This is a metapackage to pull in all the librte bus libraries.
+ 
+ Package: librte-meta-common
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Depends: ${librte:Common},
+          ${misc:Depends},
+@@ -124,7 +124,7 @@
+  This is a metapackage to pull in all the librte common libraries.
+ 
+ Package: librte-meta-compress
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Depends: ${librte:Compress},
+          ${misc:Depends},
+@@ -135,7 +135,7 @@
+  This is a metapackage to pull in all the librte compress libraries.
+ 
+ Package: librte-meta-crypto
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Depends: ${librte:Crypto},
+          ${misc:Depends},
+@@ -146,7 +146,7 @@
+  This is a metapackage to pull in all the librte crypto libraries.
+ 
+ Package: librte-meta-dma
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Depends: ${librte:Dma},
+          ${misc:Depends},
+@@ -157,7 +157,7 @@
+  This is a metapackage to pull in all the librte dma libraries.
+ 
+ Package: librte-meta-event
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Depends: ${librte:Event},
+          ${misc:Depends},
+@@ -168,7 +168,7 @@
+  This is a metapackage to pull in all the librte event libraries.
+ 
+ Package: librte-meta-mempool
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Depends: ${librte:Mempool},
+          ${misc:Depends},
+@@ -179,7 +179,7 @@
+  This is a metapackage to pull in all the librte mempool libraries.
+ 
+ Package: librte-meta-net
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Depends: ${librte:Net},
+          ${misc:Depends},
+@@ -190,7 +190,7 @@
+  This is a metapackage to pull in all the librte net libraries.
+ 
+ Package: librte-meta-raw
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Depends: ${librte:Raw},
+          ${misc:Depends},
+@@ -201,7 +201,7 @@
+  This is a metapackage to pull in all the librte raw libraries.
+ 
+ Package: librte-meta-allpmds
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Depends: ${librte:Allpmds},
+          ${misc:Depends},
+@@ -212,7 +212,7 @@
+  This is a metapackage to pull in all poll mode drivers produced by DPDK.
+ 
+ Package: librte-meta-all
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Depends: ${librte:All},
+          ${misc:Depends},
+@@ -224,7 +224,7 @@
+ 
+ Package: dpdk-dev
+ Section: oldlibs
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Breaks: dpdk (<< 18.11-4~),
+ Replaces: dpdk (<< 18.11-4),
+ Depends: libdpdk-dev (>= ${source:Version}),
+@@ -260,7 +260,7 @@
+ 
+ Package: libdpdk-dev
+ Section: libdevel
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends},
+ Depends: libbpf-dev,
+@@ -292,7 +292,7 @@
+  This is required for a number of static inline functions in the public headers.
+ 
+ Package: librte-acl23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__acl_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -306,7 +306,7 @@
+  This package contains the runtime libraries for librte-acl.
+ 
+ Package: librte-baseband-acc23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/bbdevs/acc100.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -320,7 +320,7 @@
+  This package contains the runtime libraries for librte-baseband-acc100.
+ 
+ Package: librte-baseband-fpga-5gnr-fec23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/bbdevs/fpga_5gnr_fec.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -334,7 +334,7 @@
+  This package contains the runtime libraries for librte-baseband-fpga-5gnr-fec.
+ 
+ Package: librte-baseband-fpga-lte-fec23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/bbdevs/fpga_lte_fec.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -348,7 +348,7 @@
+  This package contains the runtime libraries for librte-baseband-fpga-lte-fec.
+ 
+ Package: librte-baseband-la12xx23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/bbdevs/la12x.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -362,7 +362,7 @@
+  This package contains the runtime libraries for librte-baseband-la12x.
+ 
+ Package: librte-baseband-null23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/bbdevs/null.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -376,7 +376,7 @@
+  This package contains the runtime libraries for librte-baseband-null.
+ 
+ Package: librte-baseband-turbo-sw23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/bbdevs/turbo_sw.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -390,7 +390,7 @@
+  This package contains the runtime libraries for librte-baseband-turbo-sw.
+ 
+ Package: librte-bbdev23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__bbdev_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -404,7 +404,7 @@
+  This package contains the runtime libraries for librte-bbdev.
+ 
+ Package: librte-bitratestats23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends},
+ Depends: ${misc:Depends},
+@@ -417,7 +417,7 @@
+  This package contains the runtime libraries for librte-bitratestats.
+ 
+ Package: librte-bpf23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/prog_guide/bpf_lib.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -435,7 +435,7 @@
+  dpdk application.
+ 
+ Package: librte-bus-auxiliary23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends},
+ Depends: ${misc:Depends},
+@@ -447,7 +447,7 @@
+  This package contains the runtime libraries for librte-bus-auxiliary.
+ 
+ Package: librte-bus-dpaa23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/dpaa.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -460,7 +460,7 @@
+  This package contains the runtime libraries for librte-bus-dpaa.
+ 
+ Package: librte-bus-fslmc23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends},
+ Depends: ${misc:Depends},
+@@ -472,7 +472,7 @@
+  This package contains the runtime libraries for librte-bus-fslmc.
+ 
+ Package: librte-bus-ifpga23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/rawdevs/ifpga_rawdev.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -485,7 +485,7 @@
+  This package contains the runtime libraries for librte-bus-ifpga.
+ 
+ Package: librte-bus-pci23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends},
+ Depends: ${misc:Depends},
+@@ -497,7 +497,7 @@
+  This package contains the runtime libraries for librte-bus-pci.
+ 
+ Package: librte-bus-vdev23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends},
+ Depends: ${misc:Depends},
+@@ -509,7 +509,7 @@
+  This package contains the runtime libraries for librte-bus-vdev.
+ 
+ Package: librte-bus-vmbus23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends},
+ Depends: ${misc:Depends},
+@@ -521,7 +521,7 @@
+  This package contains the runtime libraries for librte-bus-vmbus.
+ 
+ Package: librte-cfgfile23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__cfgfile_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -535,7 +535,7 @@
+  This package contains the runtime libraries for librte-cfgfile.
+ 
+ Package: librte-cmdline23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/cmdline_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -549,7 +549,7 @@
+  This package contains the runtime libraries for librte-cmdline.
+ 
+ Package: librte-common-cnxk23
+-Architecture: amd64 arm64 ppc64el riscv64
++Architecture: amd64 arm64 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends},
+ Depends: ${misc:Depends},
+@@ -562,7 +562,7 @@
+  This package contains the runtime libraries for librte-common-cnxk.
+ 
+ Package: librte-common-cpt23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends},
+ Depends: ${misc:Depends},
+@@ -575,7 +575,7 @@
+  This package contains the runtime libraries for librte-common-cpt.
+ 
+ Package: librte-common-dpaax23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends},
+ Depends: ${misc:Depends},
+@@ -588,7 +588,7 @@
+  This package contains the runtime libraries for librte-common-dpaax.
+ 
+ Package: librte-common-iavf23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/intel_vf.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -601,7 +601,7 @@
+  This package contains the runtime libraries for librte-common-iavf.
+ 
+ Package: librte-common-idpf23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/idpf.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -614,7 +614,7 @@
+  This package contains the runtime libraries for librte-common-idpf.
+ 
+ Package: librte-common-mlx5-23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/mlx5.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -627,7 +627,7 @@
+  This package contains the runtime libraries for librte-common-mlx5.
+ 
+ Package: librte-common-octeontx23
+-Architecture: amd64 arm64 ppc64el riscv64
++Architecture: amd64 arm64 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/octeontx.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -641,7 +641,7 @@
+  This package contains the runtime libraries for librte-common-octeontx.
+ 
+ Package: librte-common-qat23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/cryptodevs/qat.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -654,7 +654,7 @@
+  This package contains the runtime libraries for librte-common-qat.
+ 
+ Package: librte-common-sfc-efx23
+-Architecture: amd64 arm64 riscv64
++Architecture: amd64 arm64 loong64 riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/sfc_efx.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -668,7 +668,7 @@
+  This package contains the runtime libraries for librte-common-sfc-efx.
+ 
+ Package: librte-compressdev23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/compressdevs/isal.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -684,7 +684,7 @@
+  Provides poll mode compression & decompression driver support.
+ 
+ Package: librte-compress-isal23
+-Architecture: amd64 riscv64
++Architecture: amd64 loong64 riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/compressdevs/isal.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -702,7 +702,7 @@
+  Inflate(decompression).
+ 
+ Package: librte-compress-mlx5-23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/compressdevs/mlx5.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -716,7 +716,7 @@
+  This package contains the runtime libraries for librte-compress-mlx5.
+ 
+ Package: librte-compress-octeontx23
+-Architecture: amd64 arm64 ppc64el riscv64
++Architecture: amd64 arm64 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/compressdevs/octeontx.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -729,7 +729,7 @@
+  This package contains the runtime libraries for librte-compress-octeontx.
+ 
+ Package: librte-compress-zlib23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/compressdevs/zlib.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -743,7 +743,7 @@
+  This package contains the runtime libraries for librte-compress-zlib.
+ 
+ Package: librte-crypto-bcmfs23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/cryptodevs/bcmfs.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -757,7 +757,7 @@
+  This package contains the runtime libraries for librte-crypto-bcmfs.
+ 
+ Package: librte-crypto-caam-jr23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/cryptodevs/caam_jr.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -771,7 +771,7 @@
+  This package contains the runtime libraries for librte-crypto-caam-jr.
+ 
+ Package: librte-crypto-ccp23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/cryptodevs/ccp.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -785,7 +785,7 @@
+  This package contains the runtime libraries for librte-crypto-ccp.
+ 
+ Package: librte-crypto-cnxk23
+-Architecture: amd64 arm64 ppc64el riscv64
++Architecture: amd64 arm64 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/cryptodevs/cnxk.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -799,7 +799,7 @@
+  This package contains the runtime libraries for librte-crypto-cnxk.
+ 
+ Package: librte-cryptodev23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__cryptodev_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -813,7 +813,7 @@
+  This package contains the runtime libraries for librte-cryptodev.
+ 
+ Package: librte-crypto-dpaa2-sec23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/dpaa2.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -827,7 +827,7 @@
+  This package contains the runtime libraries for librte-crypto-dpaa2-sec.
+ 
+ Package: librte-crypto-dpaa-sec23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/dpaa.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -841,7 +841,7 @@
+  This package contains the runtime libraries for librte-crypto-dpaa-sec.
+ 
+ Package: librte-crypto-ipsec-mb23
+-Architecture: amd64 riscv64
++Architecture: amd64 loong64 riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends},
+ Depends: ${misc:Depends},
+@@ -856,7 +856,7 @@
+  kasumi, snow3g and zuc - their usage and EAL options stay the same.
+ 
+ Package: librte-crypto-mlx5-23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/cryptodevs/mlx5.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -869,7 +869,7 @@
+  This package contains the runtime libraries for librte-crypto-mlx5.
+ 
+ Package: librte-crypto-nitrox23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/cryptodevs/nitrox.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -885,7 +885,7 @@
+  cryptographic operations to the NITROX V security processor
+ 
+ Package: librte-crypto-null23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/cryptodevs/null.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -899,7 +899,7 @@
+  This package contains the runtime libraries for librte-crypto-null.
+ 
+ Package: librte-crypto-octeontx23
+-Architecture: amd64 arm64 ppc64el riscv64
++Architecture: amd64 arm64 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/cryptodevs/octeontx.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -912,7 +912,7 @@
+  This package contains the runtime libraries for librte-crypto-octeontx.
+ 
+ Package: librte-crypto-openssl23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/cryptodevs/openssl.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -926,7 +926,7 @@
+  This package contains the runtime libraries for librte-crypto-openssl.
+ 
+ Package: librte-crypto-scheduler23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/cryptodevs/scheduler.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -940,7 +940,7 @@
+  This package contains the runtime libraries for librte-crypto-scheduler.
+ 
+ Package: librte-crypto-virtio23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/cryptodevs/virtio.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -954,7 +954,7 @@
+  This package contains the runtime libraries for librte-crypto-virtio.
+ 
+ Package: librte-distributor23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__distributor_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -968,7 +968,7 @@
+  This package contains the runtime libraries for librte-distributor.
+ 
+ Package: librte-dma-cnxk23
+-Architecture: amd64 arm64 ppc64el riscv64
++Architecture: amd64 arm64 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/dmadevs/cnxk.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -982,7 +982,7 @@
+  This package contains the runtime libraries for librte-dma-cnxk.
+ 
+ Package: librte-dma-dpaa23
+-Architecture: amd64 i386 arm64 ppc64el riscv64
++Architecture: amd64 i386 arm64 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/dmadevs/dpaa.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -996,7 +996,7 @@
+  This package contains the runtime libraries for librte-dma-dpaa.
+ 
+ Package: librte-dma-dpaa2-23
+-Architecture: amd64 i386 arm64 ppc64el riscv64
++Architecture: amd64 i386 arm64 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/dmadevs/index.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1010,7 +1010,7 @@
+  This package contains the runtime libraries for librte-dma-dpaa2.
+ 
+ Package: librte-dma-hisilicon23
+-Architecture: amd64 arm64 riscv64
++Architecture: amd64 arm64 loong64 riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/dmadevs/hisilicon.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1024,7 +1024,7 @@
+  This package contains the runtime libraries for librte-dma-hisilicon.
+ 
+ Package: librte-dma-idxd23
+-Architecture: amd64 i386 riscv64
++Architecture: amd64 i386 loong64 riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/dmadevs/idxd.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1052,7 +1052,7 @@
+  This package contains the runtime libraries for librte-dma-ioat.
+ 
+ Package: librte-dma-skeleton23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends},
+ Depends: ${misc:Depends},
+@@ -1065,7 +1065,7 @@
+  This package contains the runtime libraries for librte-dma-skeleton.
+ 
+ Package: librte-dmadev23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__dmadev_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1079,7 +1079,7 @@
+  This package contains the runtime libraries for librte-dmadev.
+ 
+ Package: librte-eal23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__eal_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1093,7 +1093,7 @@
+  This package contains the runtime libraries for librte-eal.
+ 
+ Package: librte-efd23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/prog_guide/efd_lib.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1107,7 +1107,7 @@
+  This package contains the runtime libraries for librte-efd.
+ 
+ Package: librte-ethdev23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__ethdev_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1121,7 +1121,7 @@
+  This package contains the runtime libraries for libethdev.
+ 
+ Package: librte-eventdev23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends},
+ Depends: ${misc:Depends},
+@@ -1134,7 +1134,7 @@
+  This package contains the runtime libraries for librte-eventdev.
+ 
+ Package: librte-event-cnxk23
+-Architecture: amd64 arm64 ppc64el riscv64
++Architecture: amd64 arm64 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/eventdevs/cnxk.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1162,7 +1162,7 @@
+  This package contains the runtime libraries for librte-event-dlb2.
+ 
+ Package: librte-event-dpaa23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/dpaa.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1176,7 +1176,7 @@
+  This package contains the runtime libraries for librte-event-dpaa.
+ 
+ Package: librte-event-dpaa2-23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/dpaa2.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1190,7 +1190,7 @@
+  This package contains the runtime libraries for librte-event-dpaa2.
+ 
+ Package: librte-event-dsw23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/eventdevs/dsw.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1204,7 +1204,7 @@
+  This package contains the runtime libraries for librte-dsw-event.
+ 
+ Package: librte-event-octeontx23
+-Architecture: amd64 arm64 ppc64el riscv64
++Architecture: amd64 arm64 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/eventdevs/octeontx.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1218,7 +1218,7 @@
+  This package contains the runtime libraries for librte-event-octeontx.
+ 
+ Package: librte-event-opdl23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/eventdevs/opdl.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1232,7 +1232,7 @@
+  This package contains the runtime libraries for librte-event-opdl.
+ 
+ Package: librte-event-skeleton23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends},
+ Depends: ${misc:Depends},
+@@ -1245,7 +1245,7 @@
+  This package contains the runtime libraries for librte-event-skeleton.
+ 
+ Package: librte-event-sw23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/eventdevs/dsw.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1259,7 +1259,7 @@
+  This package contains the runtime libraries for librte-event-sw.
+ 
+ Package: librte-fib23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/api/rte__fib_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1274,7 +1274,7 @@
+  FIB (Forwarding information base) implementation for IPv4 Longest Prefix Match
+ 
+ Package: librte-graph23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__graph_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1287,7 +1287,7 @@
+  This package contains the runtime libraries for librte-graph.
+ 
+ Package: librte-gro23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__gro_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1300,7 +1300,7 @@
+  This package contains the runtime libraries for librte-gro.
+ 
+ Package: librte-gso23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__gso_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1313,7 +1313,7 @@
+  This package contains the runtime libraries for librte-gso.
+ 
+ Package: librte-hash23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__hash_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1327,7 +1327,7 @@
+  This package contains the runtime libraries for librte-hash.
+ 
+ Package: librte-ip-frag23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__ip__frag_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1341,7 +1341,7 @@
+  This package contains the runtime libraries for librte-ip-frag.
+ 
+ Package: librte-ipsec23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/prog_guide/ipsec_lib.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1355,7 +1355,7 @@
+  This package contains the runtime libraries for librte-ipsec.
+ 
+ Package: librte-jobstats23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__jobstats_8h_source.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1369,7 +1369,7 @@
+  This package contains the runtime libraries for librte-jobstats.
+ 
+ Package: librte-kvargs23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__kvargs_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1383,7 +1383,7 @@
+  This package contains the runtime libraries for librte-kvargs.
+ 
+ Package: librte-latencystats23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends},
+ Depends: ${misc:Depends},
+@@ -1396,7 +1396,7 @@
+  This package contains the runtime libraries for librte-latencystats.
+ 
+ Package: librte-lpm23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__lpm_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1410,7 +1410,7 @@
+  This package contains the runtime libraries for librte-lpm.
+ 
+ Package: librte-mbuf23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__mbuf_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1424,7 +1424,7 @@
+  This package contains the runtime libraries for librte-mbuf.
+ 
+ Package: librte-member23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__member_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1438,7 +1438,7 @@
+  This package contains the runtime libraries for librte-member.
+ 
+ Package: librte-mempool23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__mempool_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1452,7 +1452,7 @@
+  This package contains the runtime libraries for librte-mempool.
+ 
+ Package: librte-mempool-bucket23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends},
+ Depends: ${misc:Depends},
+@@ -1465,7 +1465,7 @@
+  This package contains the runtime libraries for librte-mempool-bucket.
+ 
+ Package: librte-mempool-cnxk23
+-Architecture: amd64 arm64 ppc64el riscv64
++Architecture: amd64 arm64 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/cnxk.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1479,7 +1479,7 @@
+  This package contains the runtime libraries for librte-mempool-cnxk.
+ 
+ Package: librte-mempool-dpaa23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/dpaa.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1493,7 +1493,7 @@
+  This package contains the runtime libraries for librte-mempool-dpaa.
+ 
+ Package: librte-mempool-dpaa2-23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/dpaa2.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1507,7 +1507,7 @@
+  This package contains the runtime libraries for librte-mempool-dpaa2.
+ 
+ Package: librte-mempool-octeontx23
+-Architecture: amd64 arm64 ppc64el riscv64
++Architecture: amd64 arm64 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/mempool/octeontx.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1521,7 +1521,7 @@
+  This package contains the runtime libraries for librte-mempool-octeontx.
+ 
+ Package: librte-mempool-ring23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/mempool/ring.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1535,7 +1535,7 @@
+  This package contains the runtime libraries for librte-mempool-ring.
+ 
+ Package: librte-mempool-stack23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/mempool/stack.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1549,7 +1549,7 @@
+  This package contains the runtime libraries for librte-mempool-stack.
+ 
+ Package: librte-meter23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__meter_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1563,7 +1563,7 @@
+  This package contains the runtime libraries for librte-meter.
+ 
+ Package: librte-metrics23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/prog_guide/metrics_lib.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1577,7 +1577,7 @@
+  This package contains the runtime libraries for librte-metrics.
+ 
+ Package: librte-net23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/prog_guide/overview.html?highlight=librte_net#librte-net
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1596,7 +1596,7 @@
+  IPv4/IPv6 header structures and TCP, UDP and SCTP header structures.
+ 
+ Package: librte-net-af-packet23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/browse/dpdk/tree/drivers/net/af_packet
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1610,7 +1610,7 @@
+  This package contains the runtime libraries for librte-net-af-packet.
+ 
+ Package: librte-net-af-xdp23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/af_xdp.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1627,7 +1627,7 @@
+  packets to a memory buffer in userspace.
+ 
+ Package: librte-net-ark23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends},
+ Depends: ${misc:Depends},
+@@ -1640,7 +1640,7 @@
+  This package contains the runtime libraries for librte-net-ark.
+ 
+ Package: librte-net-atlantic23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/atlantic.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1654,7 +1654,7 @@
+  This package contains the runtime libraries for librte-net-atlantic.
+ 
+ Package: librte-net-avp23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/avp.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1668,7 +1668,7 @@
+  This package contains the runtime libraries for librte-net-avp.
+ 
+ Package: librte-net-axgbe23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/axgbe.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1682,7 +1682,7 @@
+  This package contains the runtime libraries for librte-net-axgbe.
+ 
+ Package: librte-net-bnx2x23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/bnx2x.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1696,7 +1696,7 @@
+  This package contains the runtime libraries for librte-net-bnx2x.
+ 
+ Package: librte-net-bnxt23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/bnxt.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1710,7 +1710,7 @@
+  This package contains the runtime libraries for librte-net-bnxt.
+ 
+ Package: librte-net-bond23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/prog_guide/link_bonding_poll_mode_drv_lib.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1724,7 +1724,7 @@
+  This package contains the runtime libraries for librte-net-bond.
+ 
+ Package: librte-net-cnxk23
+-Architecture: amd64 arm64 ppc64el riscv64
++Architecture: amd64 arm64 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/cnxk.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1738,7 +1738,7 @@
+  This package contains the runtime libraries for librte-net-cnxk.
+ 
+ Package: librte-net-cxgbe23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/cxgbe.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1752,7 +1752,7 @@
+  This package contains the runtime libraries for librte-net-cxgbe.
+ 
+ Package: librte-net-dpaa23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/dpaa.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1766,7 +1766,7 @@
+  This package contains the runtime libraries for librte-net-dpaa.
+ 
+ Package: librte-net-dpaa2-23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/dpaa2.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1780,7 +1780,7 @@
+  This package contains the runtime libraries for librte-net-dpaa2.
+ 
+ Package: librte-net-e1000-23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/e1000em.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1794,7 +1794,7 @@
+  This package contains the runtime libraries for librte-net-e1000.
+ 
+ Package: librte-net-ena23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/ena.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1808,7 +1808,7 @@
+  This package contains the runtime libraries for librte-net-ena.
+ 
+ Package: librte-net-enetc23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/enetc.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1822,7 +1822,7 @@
+  This package contains the runtime libraries for librte-net-enetc.
+ 
+ Package: librte-net-enetfec23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/enetfec.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1836,7 +1836,7 @@
+  This package contains the runtime libraries for librte-net-enetfec.
+ 
+ Package: librte-net-enic23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/enic.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1850,7 +1850,7 @@
+  This package contains the runtime libraries for librte-net-enic.
+ 
+ Package: librte-net-failsafe23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/fail_safe.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1864,7 +1864,7 @@
+  This package contains the runtime libraries for librte-net-failsafe.
+ 
+ Package: librte-net-fm10k23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/fm10k.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1878,7 +1878,7 @@
+  This package contains the runtime libraries for librte-net-fm10k.
+ 
+ Package: librte-net-hinic23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/hinic.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1909,7 +1909,7 @@
+  Hisilicon Kunpeng 920 SoC
+ 
+ Package: librte-net-i40e23
+-Architecture: amd64 arm64 i386 ppc64el
++Architecture: amd64 arm64 i386 loong64 ppc64el
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/i40e.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1923,7 +1923,7 @@
+  This package contains the runtime libraries for librte-net-i40e.
+ 
+ Package: librte-net-iavf23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends},
+ Depends: ${misc:Depends},
+@@ -1936,7 +1936,7 @@
+  This package contains the runtime libraries for librte-net-iavf.
+ 
+ Package: librte-net-ice23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/ice.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1950,7 +1950,7 @@
+  This package contains the runtime libraries for librte-net-ice.
+ 
+ Package: librte-net-igc23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/igc.html?highlight=igc
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1963,7 +1963,7 @@
+  This package contains the runtime libraries for librte-net-igc.
+ 
+ Package: librte-net-ionic23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/ionic.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1976,7 +1976,7 @@
+  This package contains the runtime libraries for librte-net-ionic.
+ 
+ Package: librte-net-ipn3ke23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/ipn3ke.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -1993,7 +1993,7 @@
+  X710/XXV710 and Intel Arria 10 FPGA.
+ 
+ Package: librte-net-ixgbe23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/ixgbe.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2007,7 +2007,7 @@
+  This package contains the runtime libraries for librte-net-ixgbe.
+ 
+ Package: librte-net-liquidio23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/liquidio.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2021,7 +2021,7 @@
+  This package contains the runtime libraries for librte-net-liquidio.
+ 
+ Package: librte-net-memif23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/memif.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2035,7 +2035,7 @@
+  This package contains the runtime libraries for librte-net-memif.
+ 
+ Package: librte-net-mlx4-23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/mlx4.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2050,7 +2050,7 @@
+  This package contains the runtime libraries for librte-net-mlx4.
+ 
+ Package: librte-net-mlx5-23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/mlx5.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2065,7 +2065,7 @@
+  This package contains the runtime libraries for librte-net-mlx5.
+ 
+ Package: librte-net-netvsc23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/netvsc.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2078,7 +2078,7 @@
+  This package contains the runtime libraries for librte-net-netvsc.
+ 
+ Package: librte-net-ngbe23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/ngbe.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2091,7 +2091,7 @@
+  This package contains the runtime libraries for librte-net-ngbe.
+ 
+ Package: librte-net-nfp23
+-Architecture: amd64 arm64 ppc64el riscv64
++Architecture: amd64 arm64 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends},
+ Depends: ${misc:Depends},
+@@ -2104,7 +2104,7 @@
+  This package contains the runtime libraries for librte-net-nfp.
+ 
+ Package: librte-net-null23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/browse/dpdk/tree/drivers/net/null
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2118,7 +2118,7 @@
+  This package contains the runtime libraries for librte-net-null.
+ 
+ Package: librte-net-octeontx23
+-Architecture: amd64 arm64 ppc64el riscv64
++Architecture: amd64 arm64 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/octeontx.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2132,7 +2132,7 @@
+  This package contains the runtime libraries for librte-net-octeontx.
+ 
+ Package: librte-net-pcap23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/pcap_ring.html#libpcap-based-pmd
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2146,7 +2146,7 @@
+  This package contains the runtime libraries for librte-net-pcap.
+ 
+ Package: librte-net-gve23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/gve.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2160,7 +2160,7 @@
+  This package contains the runtime libraries for librte-net-gve.
+ 
+ Package: librte-net-idpf23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/idpf.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2174,7 +2174,7 @@
+  This package contains the runtime libraries for librte-net-idpf.
+ 
+ Package: librte-net-octeon-ep23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/octeon_ep.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2188,7 +2188,7 @@
+  This package contains the runtime libraries for librte-net-octeon-ep.
+ 
+ Package: librte-pcapng23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/prog_guide/pcapng_lib.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2202,7 +2202,7 @@
+  This package contains the runtime libraries for librte-net-pcapng.
+ 
+ Package: librte-net-pfe23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: http://doc.dpdk.org/guides/nics/pfe.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2218,7 +2218,7 @@
+  inbuilt NIC found in the NXP LS1012 SoC.
+ 
+ Package: librte-net-qede23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/qede.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2235,7 +2235,7 @@
+  in SR-IOV context.
+ 
+ Package: librte-net-ring23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/pcap_ring.html#rings-based-pmd
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2263,7 +2263,7 @@
+  This package contains the runtime libraries for librte-net-sfc.
+ 
+ Package: librte-net-softnic23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/softnic.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2279,7 +2279,7 @@
+  This package contains the runtime libraries for librte-net-softnic.
+ 
+ Package: librte-net-tap23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/tap.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2293,7 +2293,7 @@
+  This package contains the runtime libraries for librte-net-tap.
+ 
+ Package: librte-net-thunderx23
+-Architecture: amd64 arm64 ppc64el riscv64
++Architecture: amd64 arm64 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/thunderx.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2307,7 +2307,7 @@
+  This package contains the runtime libraries for librte-net-thunderx.
+ 
+ Package: librte-net-txgbe23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/nics/txgbe.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2321,7 +2321,7 @@
+  This package contains the runtime libraries for librte-net-txgbe.
+ 
+ Package: librte-net-vdev-netvsc23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/vdev_netvsc.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2335,7 +2335,7 @@
+  This package contains the runtime libraries for librte-net-vdev-netvsc.
+ 
+ Package: librte-net-vhost23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/vhost.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2349,7 +2349,7 @@
+  This package contains the runtime libraries for librte-net-vhost.
+ 
+ Package: librte-net-virtio23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/virtio.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2363,7 +2363,7 @@
+  This package contains the runtime libraries for librte-net-virtio.
+ 
+ Package: librte-net-vmxnet3-23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/vmxnet3.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2377,7 +2377,7 @@
+  This package contains the runtime libraries for librte-net-vmxnet3.
+ 
+ Package: librte-node23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/prog_guide/graph_lib.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2395,7 +2395,7 @@
+  cluster to monitor per graph and per node stats.
+ 
+ Package: librte-pci23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__pci_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2408,7 +2408,7 @@
+  This package contains the runtime libraries for librte-pci.
+ 
+ Package: librte-pdump23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/howto/packet_capture_framework.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2422,7 +2422,7 @@
+  This package contains the runtime libraries for librte-pdump.
+ 
+ Package: librte-pipeline23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__pipeline_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2436,7 +2436,7 @@
+  This package contains the runtime libraries for librte-pipeline.
+ 
+ Package: librte-port23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__port_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2450,7 +2450,7 @@
+  This package contains the runtime libraries for librte-port.
+ 
+ Package: librte-power23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__power_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2464,7 +2464,7 @@
+  This package contains the runtime libraries for librte-power.
+ 
+ Package: librte-rawdev23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__rawdev_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2478,7 +2478,7 @@
+  This package contains the runtime libraries for librte-rawdev.
+ 
+ Package: librte-raw-cnxk-bphy23
+-Architecture: amd64 arm64 ppc64el riscv64
++Architecture: amd64 arm64 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/cnxk.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2492,7 +2492,7 @@
+  This package contains the runtime libraries for librte-raw-cnxk-bphy.
+ 
+ Package: librte-raw-dpaa2-cmdif23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/nics/dpaa2.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2506,7 +2506,7 @@
+  This package contains the runtime libraries for librte-raw-dpaa2-cmdif.
+ 
+ Package: librte-raw-ifpga23
+-Architecture: amd64 arm64 i386 ppc64el
++Architecture: amd64 arm64 i386 loong64 ppc64el
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/rawdevs/ifpga_rawdev.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2523,7 +2523,7 @@
+  for FPGA management.
+ 
+ Package: librte-raw-ntb23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/rawdevs/ntb.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2537,7 +2537,7 @@
+  This package contains the runtime libraries for librte-raw-ntb.
+ 
+ Package: librte-raw-skeleton23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/prog_guide/rawdev.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2551,7 +2551,7 @@
+  This package contains the runtime libraries for librte-raw-skeleton.
+ 
+ Package: librte-raw-cnxk-gpio23
+-Architecture: amd64 arm64 ppc64el riscv64
++Architecture: amd64 arm64 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/rawdevs/cnxk_gpio.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2566,7 +2566,7 @@
+ 
+ 
+ Package: librte-rcu23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/prog_guide/rcu_lib.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2580,7 +2580,7 @@
+  This package contains the runtime libraries for librte-rcu.
+ 
+ Package: librte-regexdev23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/regexdevs/index.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2593,7 +2593,7 @@
+  This package contains the runtime libraries for librte-regexdev.
+ 
+ Package: librte-regex-mlx5-23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/regexdevs/mlx5.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2607,7 +2607,7 @@
+  This package contains the runtime libraries for librte-regex-mlx5.
+ 
+ Package: librte-regex-cn9k23
+-Architecture: amd64 arm64 ppc64el riscv64
++Architecture: amd64 arm64 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/regexdevs/cn9k.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2620,7 +2620,7 @@
+  This package contains the runtime libraries for librte-regex-cn9k.
+ 
+ Package: librte-reorder23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__reorder_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2634,7 +2634,7 @@
+  This package contains the runtime libraries for librte-reorder.
+ 
+ Package: librte-rib23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/api/rte__rib_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2649,7 +2649,7 @@
+  RIB is a Level compressed tree implementation for IPv4 Longest Prefix Match
+ 
+ Package: librte-ring23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__ring_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2663,7 +2663,7 @@
+  This package contains the runtime libraries for librte-ring.
+ 
+ Package: librte-sched23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__sched_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2677,7 +2677,7 @@
+  This package contains the runtime libraries for librte-sched.
+ 
+ Package: librte-security23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__security_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2691,7 +2691,7 @@
+  This package contains the runtime libraries for librte-security.
+ 
+ Package: librte-stack23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/prog_guide/stack_lib.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2705,7 +2705,7 @@
+  This package contains the runtime libraries for librte-stack.
+ 
+ Package: librte-table23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__table_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2719,7 +2719,7 @@
+  This package contains the runtime libraries for librte-table.
+ 
+ Package: librte-telemetry23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__telemetry_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2733,7 +2733,7 @@
+  This package contains the runtime libraries for librte-telemetry.
+ 
+ Package: librte-timer23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__timer_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2747,7 +2747,7 @@
+  This package contains the runtime libraries for librte-timer.
+ 
+ Package: librte-vdpa-ifc23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/vdpadevs/ifc.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2760,7 +2760,7 @@
+  This package contains the runtime libraries for librte-vdpa-ifc.
+ 
+ Package: librte-vdpa-mlx5-23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://doc.dpdk.org/guides/vdpadevs/mlx5.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2787,7 +2787,7 @@
+  This package contains the runtime libraries for librte-vdpa-sfc.
+ 
+ Package: librte-vhost23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/api/rte__vhost_8h.html
+ Pre-Depends: ${misc:Pre-Depends},
+@@ -2801,7 +2801,7 @@
+  This package contains the runtime libraries for librte-vhost.
+ 
+ Package: librte-gpudev23
+-Architecture: amd64 arm64 i386 ppc64el riscv64
++Architecture: amd64 arm64 i386 loong64 ppc64el riscv64
+ Multi-Arch: same
+ Homepage: https://dpdk.org/doc/guides/gpus/overview.html
+ Pre-Depends: ${misc:Pre-Depends},
+diff -uNr a/debian/librte-eal23.symbols b/debian/librte-eal23.symbols
+--- a/debian/librte-eal23.symbols	2022-12-17 21:57:11.000000000 +0800
++++ b/debian/librte-eal23.symbols	2023-06-16 13:06:45.000000000 +0800
+@@ -343,7 +343,7 @@
+  rte_realloc_socket@DPDK_23 22.11
+  rte_reciprocal_value@DPDK_23 22.11
+  rte_reciprocal_value_u64@DPDK_23 22.11
+- (arch=!ppc64el !arm64 !armhf !riscv64)rte_rtm_supported@DPDK_23 22.11
++ (arch=!ppc64el !arm64 !armhf !loong64 !riscv64)rte_rtm_supported@DPDK_23 22.11
+  rte_service_attr_get@DPDK_23 22.11
+  rte_service_attr_reset_all@DPDK_23 22.11
+  rte_service_component_register@DPDK_23 22.11
+diff -uNr a/debian/rules b/debian/rules
+--- a/debian/rules	2022-12-17 21:57:11.000000000 +0800
++++ b/debian/rules	2023-06-16 13:06:45.000000000 +0800
+@@ -98,7 +98,7 @@
+ 	head obj-$(DEB_HOST_GNU_TYPE)/compile_commands.json || find . -name compile_commands.json
+ 	grep --max-count=1 -e '-mcpu=' -e '-march=' \
+ 		obj-$(DEB_HOST_GNU_TYPE)/compile_commands.json
+-	grep -q -e '-mcpu=power8' -e '-march=corei7' -e '-march=armv8-a+crc' -e '-march=rv64gc' \
++	grep -q -e '-mcpu=power8' -e '-march=corei7' -e '-march=armv8-a+crc' -e '-march=rv64gc' -e '-march=loongarch64'\
+ 		obj-$(DEB_HOST_GNU_TYPE)/compile_commands.json \
+ 		|| (echo "Error: unexpected target cpu"; exit 1)
+ 

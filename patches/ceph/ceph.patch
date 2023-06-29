@@ -1,0 +1,164 @@
+diff -uNr a/debian/control b/debian/control
+--- a/debian/control	2023-02-16 18:54:41.000000000 +0800
++++ b/debian/control	2023-06-14 00:36:00.000000000 +0800
+@@ -50,7 +50,7 @@
+  libfuse-dev,
+  libgf-complete-dev,
+  libgnutls28-dev,
+- libgoogle-perftools-dev [amd64 arm64 armel armhf i386 mips64el mipsel ppc64 ppc64el riscv64 powerpc s390x],
++ libgoogle-perftools-dev [amd64 arm64 armel armhf i386 loong64 mips64el mipsel ppc64 ppc64el riscv64 powerpc s390x],
+  libhwloc-dev,
+  libibverbs-dev,
+  libicu-dev,
+diff -uNr a/debian/patches/series b/debian/patches/series
+--- a/debian/patches/series	2023-02-16 18:54:41.000000000 +0800
++++ b/debian/patches/series	2023-06-14 15:40:36.000000000 +0800
+@@ -23,3 +23,5 @@
+ CVE-2022-3650_1_ceph-crash_drop_privleges_to_run_as_ceph_user_rather_than_root.patch
+ CVE-2022-3650_2_ceph-crash_fix_stderr_handling.patch
+ CVE-2022-3854_1_rgw_Guard_against_malformed_bucket_URLs.patch
++support-loong64.patch
++support-loong64-2.patch
+diff -uNr a/debian/patches/support-loong64-2.patch b/debian/patches/support-loong64-2.patch
+--- a/debian/patches/support-loong64-2.patch	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/support-loong64-2.patch	2023-06-14 15:41:35.000000000 +0800
+@@ -0,0 +1,47 @@
++Description: <short summary of the patch>
++ TODO: Put a short summary on the line above and replace this paragraph
++ with a longer explanation of this change. Complete the meta-information
++ with other relevant fields (see below for details). To make it easier, the
++ information below has been extracted from the changelog. Adjust it or drop
++ it.
++ .
++ ceph (16.2.11+ds-2.ulb1) unstable; urgency=medium
++ .
++   * Non-maintainer upload.
++   * support google-perftools on loong64
++Author: root <root@debian-loongarch>
++
++---
++The information above should follow the Patch Tagging Guidelines, please
++checkout https://dep.debian.net/deps/dep3/ to learn about the format. Here
++are templates for supplementary fields that you might want to add:
++
++Origin: (upstream|backport|vendor|other), (<patch-url>|commit:<commit-id>)
++Bug: <upstream-bugtracker-url>
++Bug-Debian: https://bugs.debian.org/<bugnumber>
++Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
++Forwarded: (no|not-needed|<patch-forwarded-url>)
++Applied-Upstream: <version>, (<commit-url>|commit:<commid-id>)
++Reviewed-By: <name and email of someone who approved/reviewed the patch>
++Last-Update: 2023-06-14
++
++--- ceph-16.2.11+ds.orig/src/librbd/api/PoolMetadata.h
+++++ ceph-16.2.11+ds/src/librbd/api/PoolMetadata.h
++@@ -9,6 +9,7 @@
++ 
++ #include <map>
++ #include <string>
+++#include <cstdint>
++ 
++ namespace librbd {
++ 
++--- ceph-16.2.11+ds.orig/src/rocksdb/third-party/folly/folly/synchronization/detail/ProxyLockable-inl.h
+++++ ceph-16.2.11+ds/src/rocksdb/third-party/folly/folly/synchronization/detail/ProxyLockable-inl.h
++@@ -13,6 +13,7 @@
++ #include <memory>
++ #include <mutex>
++ #include <stdexcept>
+++#include <system_error>
++ #include <utility>
++ 
++ namespace folly {
+diff -uNr a/debian/patches/support-loong64.patch b/debian/patches/support-loong64.patch
+--- a/debian/patches/support-loong64.patch	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/support-loong64.patch	2023-06-14 11:00:46.000000000 +0800
+@@ -0,0 +1,75 @@
++Description: <short summary of the patch>
++ TODO: Put a short summary on the line above and replace this paragraph
++ with a longer explanation of this change. Complete the meta-information
++ with other relevant fields (see below for details). To make it easier, the
++ information below has been extracted from the changelog. Adjust it or drop
++ it.
++ .
++ ceph (16.2.11+ds-2.ulb1) unstable; urgency=medium
++ .
++   * Non-maintainer upload.
++   * support google-perftools on loong64
++Author: root <root@debian-loongarch>
++
++---
++The information above should follow the Patch Tagging Guidelines, please
++checkout https://dep.debian.net/deps/dep3/ to learn about the format. Here
++are templates for supplementary fields that you might want to add:
++
++Origin: (upstream|backport|vendor|other), (<patch-url>|commit:<commit-id>)
++Bug: <upstream-bugtracker-url>
++Bug-Debian: https://bugs.debian.org/<bugnumber>
++Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
++Forwarded: (no|not-needed|<patch-forwarded-url>)
++Applied-Upstream: <version>, (<commit-url>|commit:<commid-id>)
++Reviewed-By: <name and email of someone who approved/reviewed the patch>
++Last-Update: 2023-06-14
++
++--- ceph-16.2.11+ds.orig/src/common/Cycles.h
+++++ ceph-16.2.11+ds/src/common/Cycles.h
++@@ -31,7 +31,7 @@
++ 
++ #ifndef CEPH_CYCLES_H
++ #define CEPH_CYCLES_H
++-
+++#include <cstdint>
++ /**
++  * This class provides static methods that read the fine-grain CPU
++  * cycle counter and translate between cycle-level times and absolute
++@@ -82,6 +82,15 @@ class Cycles {
++     uint64_t tsc;
++     asm volatile("stck %0" : "=Q" (tsc) : : "cc");
++     return tsc;
+++#elif defined(__loongarch__)
+++
+++    uint64_t count;
+++    __asm__ __volatile__ (
+++			    "rdtime.d %[cycles], $zero\n"
+++			    : [cycles] "=r" (count)
+++			    ::
+++			    );
+++    return count;
++ #else
++ #warning No high-precision counter available for your OS/arch
++     return 0;
++--- ceph-16.2.11+ds.orig/src/common/config.h
+++++ ceph-16.2.11+ds/src/common/config.h
++@@ -15,6 +15,7 @@
++ #ifndef CEPH_CONFIG_H
++ #define CEPH_CONFIG_H
++ 
+++#include <cstdint>
++ #include <map>
++ #include <boost/container/small_vector.hpp>
++ #include "common/ConfUtils.h"
++--- ceph-16.2.11+ds.orig/src/rocksdb/include/rocksdb/rocksdb_namespace.h
+++++ ceph-16.2.11+ds/src/rocksdb/include/rocksdb/rocksdb_namespace.h
++@@ -4,7 +4,7 @@
++ //  (found in the LICENSE.Apache file in the root directory).
++ 
++ #pragma once
++-
+++#include <cstdint>
++ #ifndef ROCKSDB_NAMESPACE
++ #define ROCKSDB_NAMESPACE rocksdb
++ #endif
+diff -uNr a/debian/rules b/debian/rules
+--- a/debian/rules	2023-02-16 18:54:41.000000000 +0800
++++ b/debian/rules	2023-06-14 15:38:14.000000000 +0800
+@@ -44,6 +44,9 @@
+ ifeq (32,$(DEB_HOST_ARCH_BITS))
+ export DEB_LDFLAGS_MAINT_APPEND= -Wl,--as-needed -latomic -Wl,--no-keep-memory
+ endif
++ifneq (,$(filter $(DEB_HOST_ARCH), loong64))
++	export DEB_LDFLAGS_MAINT_APPEND= -Wl,--as-needed -latomic
++endif
+ 
+ # Fix build with fmt 9
+ export DEB_CXXFLAGS_MAINT_APPEND += -DFMT_DEPRECATED_OSTREAM

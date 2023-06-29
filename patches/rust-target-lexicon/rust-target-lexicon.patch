@@ -1,0 +1,86 @@
+diff -uNr a/debian/patches/series b/debian/patches/series
+--- a/debian/patches/series	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/series	2023-05-31 22:17:10.000000000 +0800
+@@ -0,0 +1 @@
++support-loong64.patch
+diff -uNr a/debian/patches/support-loong64.patch b/debian/patches/support-loong64.patch
+--- a/debian/patches/support-loong64.patch	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/support-loong64.patch	2023-05-31 22:17:10.000000000 +0800
+@@ -0,0 +1,77 @@
++Description: <short summary of the patch>
++ TODO: Put a short summary on the line above and replace this paragraph
++ with a longer explanation of this change. Complete the meta-information
++ with other relevant fields (see below for details). To make it easier, the
++ information below has been extracted from the changelog. Adjust it or drop
++ it.
++ .
++ rust-target-lexicon (0.12.3-1.ulb1) unstable; urgency=medium
++ .
++   * Non-maintainer upload.
++   *
++Author: root <root@debian-loongarch>
++
++---
++The information above should follow the Patch Tagging Guidelines, please
++checkout https://dep.debian.net/deps/dep3/ to learn about the format. Here
++are templates for supplementary fields that you might want to add:
++
++Origin: (upstream|backport|vendor|other), (<patch-url>|commit:<commit-id>)
++Bug: <upstream-bugtracker-url>
++Bug-Debian: https://bugs.debian.org/<bugnumber>
++Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
++Forwarded: (no|not-needed|<patch-forwarded-url>)
++Applied-Upstream: <version>, (<commit-url>|commit:<commid-id>)
++Reviewed-By: <name and email of someone who approved/reviewed the patch>
++Last-Update: 2023-05-31
++
++--- rust-target-lexicon-0.12.3.orig/src/targets.rs
+++++ rust-target-lexicon-0.12.3/src/targets.rs
++@@ -24,6 +24,7 @@ pub enum Architecture {
++     Hexagon,
++     X86_32(X86_32Architecture),
++     M68k,
+++    LoongArch64,
++     Mips32(Mips32Architecture),
++     Mips64(Mips64Architecture),
++     Msp430,
++@@ -527,6 +528,7 @@ impl Architecture {
++             | Bpfel
++             | Hexagon
++             | X86_32(_)
+++            | LoongArch64
++             | Mips64(Mips64Architecture::Mips64el)
++             | Mips32(Mips32Architecture::Mipsel)
++             | Mips32(Mips32Architecture::Mipsisa32r6el)
++@@ -587,6 +589,7 @@ impl Architecture {
++             | S390x
++             | Sparc64
++             | Sparcv9
+++            | LoongArch64
++             | Wasm64 => Ok(PointerWidth::U64),
++         }
++     }
++@@ -757,6 +760,7 @@ impl fmt::Display for Architecture {
++             Bpfel => f.write_str("bpfel"),
++             Hexagon => f.write_str("hexagon"),
++             X86_32(x86_32) => x86_32.fmt(f),
+++            LoongArch64 => f.write_str("loongarch64"),
++             M68k => f.write_str("m68k"),
++             Mips32(mips32) => mips32.fmt(f),
++             Mips64(mips64) => mips64.fmt(f),
++@@ -939,6 +943,7 @@ impl FromStr for Architecture {
++             "bpfeb" => Bpfeb,
++             "bpfel" => Bpfel,
++             "hexagon" => Hexagon,
+++            "loongarch64" => LoongArch64,
++             "m68k" => M68k,
++             "msp430" => Msp430,
++             "nvptx64" => Nvptx64,
++@@ -1406,6 +1411,7 @@ mod tests {
++             "i686-uwp-windows-gnu",
++             "i686-uwp-windows-msvc",
++             "i686-wrs-vxworks",
+++            "loongarch64-unknown-linux-gnu",
++             "m68k-unknown-linux-gnu",
++             "mips-unknown-linux-gnu",
++             "mips-unknown-linux-musl",

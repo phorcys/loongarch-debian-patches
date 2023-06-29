@@ -1,0 +1,43 @@
+diff -uNr a/debian/libsass1.symbols b/debian/libsass1.symbols
+--- a/debian/libsass1.symbols	2022-12-12 22:01:19.000000000 +0800
++++ b/debian/libsass1.symbols	2023-06-20 23:19:47.000000000 +0800
+@@ -347,13 +347,13 @@
+  _ZN4Sass10SourceFileD2Ev@Base 3.6.4-2~
+  _ZN4Sass10SourceSpanC1ENS_10SharedImplINS_10SourceDataEEERKNS_6OffsetES6_@Base 3.6.4-2~
+  _ZN4Sass10SourceSpanC1EPKc@Base 3.6.4-2~
+- (arch=!amd64 !arm64 !hppa !sh4 !x32)_ZN4Sass10SourceSpanC1ERKS0_@Base 3.6.4+20201122
++ (arch=!amd64 !arm64 !hppa !loong64 !sh4 !x32)_ZN4Sass10SourceSpanC1ERKS0_@Base 3.6.4+20201122
+  _ZN4Sass10SourceSpanC2ENS_10SharedImplINS_10SourceDataEEERKNS_6OffsetES6_@Base 3.6.4-2~
+  _ZN4Sass10SourceSpanC2EPKc@Base 3.6.4-2~
+- (arch=!amd64 !arm64 !hppa !sh4 !x32)_ZN4Sass10SourceSpanC2ERKS0_@Base 3.6.4+20201122
++ (arch=!amd64 !arm64 !hppa !loong64 !sh4 !x32)_ZN4Sass10SourceSpanC2ERKS0_@Base 3.6.4+20201122
+  _ZN4Sass10SourceSpanD1Ev@Base 3.6.4-2~
+  _ZN4Sass10SourceSpanD2Ev@Base 3.6.4-2~
+- (arch=!amd64 !arm64 !hppa !sh4 !x32)_ZN4Sass10SourceSpanaSERKS0_@Base 3.6.4+20201122
++ (arch=!amd64 !arm64 !hppa !loong64 !sh4 !x32)_ZN4Sass10SourceSpanaSERKS0_@Base 3.6.4+20201122
+  _ZN4Sass10StyleSheetC1ERKNS_8ResourceENS_10SharedImplINS_5BlockEEE@Base 3.6.4-2~
+  _ZN4Sass10StyleSheetC1ERKS0_@Base 3.6.4-2~
+  _ZN4Sass10StyleSheetC2ERKNS_8ResourceENS_10SharedImplINS_5BlockEEE@Base 3.6.4-2~
+@@ -1540,7 +1540,7 @@
+  _ZN4Sass16Parent_ReferenceD0Ev@Base 3.6.4
+  _ZN4Sass16Parent_ReferenceD1Ev@Base 3.6.4
+  _ZN4Sass16Parent_ReferenceD2Ev@Base 3.6.4
+- (optional=templinst|arch=!hurd-i386 !i386 !m68k)_ZN4Sass16PtrObjEqualityFnINS_6StringEEEbPKT_S4_@Base 3.6.4-4~
++ (optional=templinst|arch=!hurd-i386 !i386 !loong64 !m68k)_ZN4Sass16PtrObjEqualityFnINS_6StringEEEbPKT_S4_@Base 3.6.4-4~
+  _ZN4Sass16SupportsNegation7performEPNS_9OperationINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEE@Base 3.6.4-2~
+  _ZN4Sass16SupportsNegation7performEPNS_9OperationIP10Sass_ValueEE@Base 3.6.4-2~
+  _ZN4Sass16SupportsNegation7performEPNS_9OperationIPNS_10ExpressionEEE@Base 3.6.4-2~
+diff -uNr a/debian/rules b/debian/rules
+--- a/debian/rules	2022-09-27 23:28:59.000000000 +0800
++++ b/debian/rules	2023-06-20 23:20:59.000000000 +0800
+@@ -11,6 +11,10 @@
+ # relax symbols check when targeting experimental
+ export DPKG_GENSYMBOLS_CHECK_LEVEL=$(if $(EXP_RELEASE),0,1)
+ 
++ifeq ($(DEB_HOST_ARCH), loong64)
++export DPKG_GENSYMBOLS_CHECK_LEVEL=0
++endif
++
+ %:
+ 	dh $@
+ 

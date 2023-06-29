@@ -1,0 +1,12 @@
+diff -uNr a/debian/control b/debian/control
+--- a/debian/control	2023-02-26 02:41:50.000000000 +0800
++++ b/debian/control	2023-05-31 22:56:52.000000000 +0800
+@@ -22,7 +22,7 @@
+ Rules-Requires-Root: no
+ 
+ Package: libnrepl-clojure
+-Architecture: amd64 arm64
++Architecture: amd64 arm64 loong64
+ Depends:
+  ${java:Depends},
+  ${misc:Depends},

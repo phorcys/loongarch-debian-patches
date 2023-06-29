@@ -1,0 +1,91 @@
+diff -uNr a/debian/patches/fix-loong64-firefox.patch b/debian/patches/fix-loong64-firefox.patch
+--- a/debian/patches/fix-loong64-firefox.patch	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/fix-loong64-firefox.patch	2023-06-18 23:57:09.000000000 +0800
+@@ -0,0 +1,82 @@
++Description: <short summary of the patch>
++ TODO: Put a short summary on the line above and replace this paragraph
++ with a longer explanation of this change. Complete the meta-information
++ with other relevant fields (see below for details). To make it easier, the
++ information below has been extracted from the changelog. Adjust it or drop
++ it.
++ .
++ rust-bindgen (0.60.1-2.ulb1) unstable; urgency=medium
++ .
++   * Non-maintainer upload.
++   * support firefox build
++Author: root <root@debian-loongarch>
++
++---
++The information above should follow the Patch Tagging Guidelines, please
++checkout https://dep.debian.net/deps/dep3/ to learn about the format. Here
++are templates for supplementary fields that you might want to add:
++
++Origin: (upstream|backport|vendor|other), (<patch-url>|commit:<commit-id>)
++Bug: <upstream-bugtracker-url>
++Bug-Debian: https://bugs.debian.org/<bugnumber>
++Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
++Forwarded: (no|not-needed|<patch-forwarded-url>)
++Applied-Upstream: <version>, (<commit-url>|commit:<commid-id>)
++Reviewed-By: <name and email of someone who approved/reviewed the patch>
++Last-Update: 2023-06-18
++
++--- rust-bindgen-0.60.1.orig/src/codegen/mod.rs
+++++ rust-bindgen-0.60.1/src/codegen/mod.rs
++@@ -114,12 +114,13 @@ fn derives_of_item(
++     item: &Item,
++     ctx: &BindgenContext,
++     packed: bool,
+++    forward_decl: bool,
++ ) -> DerivableTraits {
++     let mut derivable_traits = DerivableTraits::empty();
++ 
++     let all_template_params = item.all_template_params(ctx);
++ 
++-    if item.can_derive_copy(ctx) && !item.annotations().disallow_copy() {
+++    if item.can_derive_copy(ctx) && !item.annotations().disallow_copy() && !forward_decl {
++         derivable_traits |= DerivableTraits::COPY;
++ 
++         if ctx.options().rust_features().builtin_clone_impls ||
++@@ -936,7 +937,7 @@ impl CodeGenerator for Type {
++                             vec![attributes::repr("transparent")];
++                         let packed = false; // Types can't be packed in Rust.
++                         let derivable_traits =
++-                            derives_of_item(item, ctx, packed);
+++                            derives_of_item(item, ctx, packed, false);
++                         if !derivable_traits.is_empty() {
++                             let derives: Vec<_> = derivable_traits.into();
++                             attributes.push(attributes::derives(&derives))
++@@ -1973,8 +1974,9 @@ impl CodeGenerator for CompInfo {
++         }
++ 
++         if forward_decl {
+++            let prefix = ctx.trait_prefix();
++             fields.push(quote! {
++-                _unused: [u8; 0],
+++                _unused: ::#prefix::cell::UnsafeCell<[u8; 0]>,
++             });
++         }
++ 
++@@ -2036,7 +2038,7 @@ impl CodeGenerator for CompInfo {
++             }
++         }
++ 
++-        let derivable_traits = derives_of_item(item, ctx, packed);
+++        let derivable_traits = derives_of_item(item, ctx, packed, self.is_forward_declaration());
++         if !derivable_traits.contains(DerivableTraits::DEBUG) {
++             needs_debug_impl = ctx.options().derive_debug &&
++                 ctx.options().impl_debug &&
++@@ -3063,7 +3065,7 @@ impl CodeGenerator for Enum {
++ 
++         if !variation.is_const() {
++             let packed = false; // Enums can't be packed in Rust.
++-            let mut derives = derives_of_item(item, ctx, packed);
+++            let mut derives = derives_of_item(item, ctx, packed, false);
++             // For backwards compat, enums always derive
++             // Clone/Eq/PartialEq/Hash, even if we don't generate those by
++             // default.
+diff -uNr a/debian/patches/series b/debian/patches/series
+--- a/debian/patches/series	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/series	2023-06-18 23:57:09.000000000 +0800
+@@ -0,0 +1 @@
++fix-loong64-firefox.patch

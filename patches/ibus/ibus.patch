@@ -1,0 +1,12 @@
+diff -uNr a/debian/control b/debian/control
+--- a/debian/control	2023-01-02 04:50:44.000000000 +0800
++++ b/debian/control	2023-06-24 02:45:18.000000000 +0800
+@@ -97,7 +97,7 @@
+ Package: ibus-tests
+ Build-Profiles: <!noinsttest>
+ # see https://bugs.debian.org/1018871 about the selection of architectures
+-Architecture: amd64 arm64 armhf i386 mips64el mipsel ppc64el s390x riscv64
++Architecture: amd64 arm64 armhf i386 loong64 mips64el mipsel ppc64el s390x riscv64
+ Multi-Arch: foreign
+ Depends: ${misc:Depends},
+          ${shlibs:Depends},

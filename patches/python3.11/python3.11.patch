@@ -1,0 +1,78 @@
+diff -uNr a/debian/multiarch.h.in b/debian/multiarch.h.in
+--- a/debian/multiarch.h.in	2021-09-02 20:45:21.000000000 +0800
++++ b/debian/multiarch.h.in	2023-04-28 12:26:47.000000000 +0800
+@@ -19,6 +19,8 @@
+ #  include <hppa-linux-gnu/@subdir@/@header@>
+ # elif defined(__ia64__)
+ #  include <ia64-linux-gnu/@subdir@/@header@>
++# elif defined(__loongarch__)
++#  include <loongarch64-linux-gnu/@subdir@/@header@>
+ # elif defined(__m68k__) && !defined(__mcoldfire__)
+ #  include <m68k-linux-gnu/@subdir@/@header@>
+ # elif defined(__mips_hard_float) && defined(__mips_isa_rev) && (__mips_isa_rev >=6) && defined(_MIPSEL)
+diff -uNr a/debian/patches/series b/debian/patches/series
+--- a/debian/patches/series	2023-03-01 17:58:01.000000000 +0800
++++ b/debian/patches/series	2023-04-28 12:27:59.000000000 +0800
+@@ -39,3 +39,4 @@
+ fix-py_compile.diff
+ ntpath-import.diff
+ shutdown-deadlock.diff
++support-loongarch64.patch
+diff -uNr a/debian/patches/support-loongarch64.patch b/debian/patches/support-loongarch64.patch
+--- a/debian/patches/support-loongarch64.patch	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/support-loongarch64.patch	2023-04-28 12:27:59.000000000 +0800
+@@ -0,0 +1,38 @@
++Description: <short summary of the patch>
++ TODO: Put a short summary on the line above and replace this paragraph
++ with a longer explanation of this change. Complete the meta-information
++ with other relevant fields (see below for details). To make it easier, the
++ information below has been extracted from the changelog. Adjust it or drop
++ it.
++ .
++ python3.11 (3.11.2-6.ulb1) unstable; urgency=medium
++ .
++   * Non-maintainer upload.
++   * suport loong64
++Author: root <root@debian-loongarch>
++
++---
++The information above should follow the Patch Tagging Guidelines, please
++checkout https://dep.debian.net/deps/dep3/ to learn about the format. Here
++are templates for supplementary fields that you might want to add:
++
++Origin: (upstream|backport|vendor|other), (<patch-url>|commit:<commit-id>)
++Bug: <upstream-bugtracker-url>
++Bug-Debian: https://bugs.debian.org/<bugnumber>
++Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
++Forwarded: (no|not-needed|<patch-forwarded-url>)
++Applied-Upstream: <version>, (<commit-url>|commit:<commid-id>)
++Reviewed-By: <name and email of someone who approved/reviewed the patch>
++Last-Update: 2023-04-28
++
++--- python3.11-3.11.2.orig/configure.ac
+++++ python3.11-3.11.2/configure.ac
++@@ -968,6 +968,8 @@ cat > conftest.c <<EOF
++         hppa-linux-gnu
++ # elif defined(__ia64__)
++         ia64-linux-gnu
+++# elif defined(__loongarch__)
+++	loongarch64-linux-gnu
++ # elif defined(__m68k__) && !defined(__mcoldfire__)
++         m68k-linux-gnu
++ # elif defined(__mips_hard_float) && defined(__mips_isa_rev) && (__mips_isa_rev >=6) && defined(_MIPSEL)
+diff -uNr a/debian/rules b/debian/rules
+--- a/debian/rules	2023-03-13 18:29:53.000000000 +0800
++++ b/debian/rules	2023-04-28 12:27:47.000000000 +0800
+@@ -54,10 +54,10 @@
+   WITHOUT_BENCH := yes
+ endif
+ ifeq ($(on_buildd),yes)
+-  ifneq (,$(filter $(DEB_HOST_ARCH), armel hppa mips mipsel mips64 mips64el riscv64 s390 hurd-i386 kfreebsd-amd64 kfreebsd-i386))
++  ifneq (,$(filter $(DEB_HOST_ARCH), armel hppa loong64 mips mipsel mips64 mips64el riscv64 s390 hurd-i386 kfreebsd-amd64 kfreebsd-i386))
+     WITHOUT_CHECK := yes
+   endif
+-  ifneq (,$(filter $(DEB_HOST_ARCH), armel hppa mips mipsel mips64 mips64el riscv64 s390 hurd-i386 kfreebsd-amd64 kfreebsd-i386))
++  ifneq (,$(filter $(DEB_HOST_ARCH), armel hppa loong64 mips mipsel mips64 mips64el riscv64 s390 hurd-i386 kfreebsd-amd64 kfreebsd-i386))
+     WITHOUT_BENCH := yes
+   endif
+ endif

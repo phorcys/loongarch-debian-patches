@@ -1,0 +1,562 @@
+diff -uNr a/debian/control b/debian/control
+--- a/debian/control	2023-02-28 06:59:59.000000000 +0800
++++ b/debian/control	2023-06-15 12:34:25.000000000 +0800
+@@ -54,10 +54,10 @@
+                libneon27-dev,
+                libnice-dev (>= 0.1.20),
+                libopenal-dev (>= 1:1.14),
+-               libopencv-dev (>= 3.0.0) [amd64 arm64 armel armhf i386 mips64el mipsel ppc64el s390x alpha hppa hurd-i386 m68k powerpc ppc64 riscv64],
+-               opencv-data [amd64 arm64 armel armhf i386 mips64el mipsel ppc64el s390x alpha hppa hurd-i386 m68k powerpc ppc64 riscv64],
++               libopencv-dev (>= 3.0.0) [amd64 arm64 armel armhf i386 loong64 mips64el mipsel ppc64el s390x alpha hppa hurd-i386 m68k powerpc ppc64 riscv64],
++               opencv-data [amd64 arm64 armel armhf i386 loong64 mips64el mipsel ppc64el s390x alpha hppa hurd-i386 m68k powerpc ppc64 riscv64],
+                libwpebackend-fdo-1.0-dev (>= 1.8.0) [linux-any],
+-               libwpewebkit-1.1-dev (>= 2.28.0) [linux-any],
++               libwpewebkit-2.0-dev (>= 2.28.0) [linux-any],
+                libopenexr-dev,
+                libopenh264-dev (>= 1.3.0),
+                libopenjp2-7-dev (>= 2.2),
+@@ -102,7 +102,7 @@
+                libwayland-dev (>= 1.11.0) [linux-any],
+                libdrm-dev (>= 2.4.98) [linux-any],
+                libva-dev (>= 1.8) [linux-any],
+-               libzxingcore-dev (>= 1.4.0) [amd64 arm64 armel armhf i386 mips64el mipsel ppc64el s390x alpha hppa hurd-i386 m68k powerpc ppc64 riscv64],
++               libzxingcore-dev (>= 1.4.0) [amd64 arm64 armel armhf i386 loong64 mips64el mipsel ppc64el s390x alpha hppa hurd-i386 m68k powerpc ppc64 riscv64],
+                wayland-protocols (>= 1.4) [linux-any],
+                libmfx-dev [amd64],
+                libgirepository1.0-dev (>= 0.9.12-4~),
+@@ -256,7 +256,7 @@
+  is not guaranteed to be stable.
+ 
+ Package: libgstreamer-opencv1.0-0
+-Architecture: amd64 arm64 armel armhf i386 mips64el mipsel ppc64el s390x alpha hppa hurd-i386 m68k powerpc ppc64 riscv64
++Architecture: amd64 arm64 armel armhf i386 loong64 mips64el mipsel ppc64el s390x alpha hppa hurd-i386 m68k powerpc ppc64 riscv64
+ Multi-Arch: same
+ Depends: ${misc:Depends},
+          ${shlibs:Depends},
+@@ -283,11 +283,11 @@
+ Section: libdevel
+ Depends: ${misc:Depends},
+          libgstreamer-plugins-bad1.0-0 (= ${binary:Version}),
+-         libgstreamer-opencv1.0-0 (= ${binary:Version}) [amd64 arm64 armel armhf i386 mips64el mipsel ppc64el s390x alpha hppa hurd-i386 m68k powerpc ppc64 riscv64],
++         libgstreamer-opencv1.0-0 (= ${binary:Version}) [amd64 arm64 armel armhf i386 loong64 mips64el mipsel ppc64el s390x alpha hppa hurd-i386 m68k powerpc ppc64 riscv64],
+          libgstreamer1.0-dev,
+          libgstreamer-plugins-base1.0-dev,
+          gir1.2-gst-plugins-bad-1.0 (= ${binary:Version}),
+-         libopencv-dev (>= 2.3.0) [amd64 arm64 armel armhf i386 mips64el mipsel ppc64el s390x alpha hppa hurd-i386 m68k powerpc ppc64 riscv64]
++         libopencv-dev (>= 2.3.0) [amd64 arm64 armel armhf i386 loong64 mips64el mipsel ppc64el s390x alpha hppa hurd-i386 m68k powerpc ppc64 riscv64]
+ Conflicts: pitivi (<< 0.9999)
+ Description: GStreamer development files for libraries from the "bad" set
+  GStreamer is a streaming media framework, based on graphs of filters
+diff -uNr a/debian/patches/series b/debian/patches/series
+--- a/debian/patches/series	2023-02-28 06:59:59.000000000 +0800
++++ b/debian/patches/series	2023-06-15 12:35:20.000000000 +0800
+@@ -1,2 +1,4 @@
+ 02_opencv-data-path.patch
+ Skip-failing-tests.patch
++support-loong64.patch
++support-wpewebkit-2.0.patch
+diff -uNr a/debian/patches/support-loong64.patch b/debian/patches/support-loong64.patch
+--- a/debian/patches/support-loong64.patch	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/support-loong64.patch	2023-06-15 12:35:20.000000000 +0800
+@@ -0,0 +1,41 @@
++Description: <short summary of the patch>
++ TODO: Put a short summary on the line above and replace this paragraph
++ with a longer explanation of this change. Complete the meta-information
++ with other relevant fields (see below for details). To make it easier, the
++ information below has been extracted from the changelog. Adjust it or drop
++ it.
++ .
++ gst-plugins-bad1.0 (1.22.0-4.ulb1) unstable; urgency=medium
++ .
++   * Non-maintainer upload.
++   * support loong64 (opencv zxing)
++Author: root <root@debian-loongarch>
++
++---
++The information above should follow the Patch Tagging Guidelines, please
++checkout https://dep.debian.net/deps/dep3/ to learn about the format. Here
++are templates for supplementary fields that you might want to add:
++
++Origin: (upstream|backport|vendor|other), (<patch-url>|commit:<commit-id>)
++Bug: <upstream-bugtracker-url>
++Bug-Debian: https://bugs.debian.org/<bugnumber>
++Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
++Forwarded: (no|not-needed|<patch-forwarded-url>)
++Applied-Upstream: <version>, (<commit-url>|commit:<commid-id>)
++Reviewed-By: <name and email of someone who approved/reviewed the patch>
++Last-Update: 2023-06-15
++
++--- gst-plugins-bad1.0-1.22.0.orig/ext/wpe/meson.build
+++++ gst-plugins-bad1.0-1.22.0/ext/wpe/meson.build
++@@ -6,9 +6,9 @@ if not wpe_feat.allowed()
++   subdir_done()
++ endif
++ 
++-wpe_dep = dependency('wpe-webkit-1.1', version : '>= 2.28', required : false)
+++wpe_dep = dependency('wpe-webkit-2.0', version : '>= 2.28', required : false)
++ if not wpe_dep.found()
++-  wpe_dep = dependency('wpe-webkit-1.0', version : '>= 2.28', required : wpe_feat)
+++  wpe_dep = dependency('wpe-webkit-2.0', version : '>= 2.28', required : wpe_feat)
++ endif
++ wpe_fdo_dep = dependency('wpebackend-fdo-1.0', version : '>= 1.8', required : wpe_feat)
++ egl_dep = dependency('egl', required : wpe_feat)
+diff -uNr a/debian/patches/support-wpewebkit-2.0.patch b/debian/patches/support-wpewebkit-2.0.patch
+--- a/debian/patches/support-wpewebkit-2.0.patch	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/support-wpewebkit-2.0.patch	2023-06-15 12:35:20.000000000 +0800
+@@ -0,0 +1,435 @@
++Description: <short summary of the patch>
++ TODO: Put a short summary on the line above and replace this paragraph
++ with a longer explanation of this change. Complete the meta-information
++ with other relevant fields (see below for details). To make it easier, the
++ information below has been extracted from the changelog. Adjust it or drop
++ it.
++ .
++ gst-plugins-bad1.0 (1.22.0-4.ulb1) unstable; urgency=medium
++ .
++   * Non-maintainer upload.
++   * support loong64 (opencv zxing)
++Author: root <root@debian-loongarch>
++
++---
++The information above should follow the Patch Tagging Guidelines, please
++checkout https://dep.debian.net/deps/dep3/ to learn about the format. Here
++are templates for supplementary fields that you might want to add:
++
++Origin: (upstream|backport|vendor|other), (<patch-url>|commit:<commit-id>)
++Bug: <upstream-bugtracker-url>
++Bug-Debian: https://bugs.debian.org/<bugnumber>
++Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
++Forwarded: (no|not-needed|<patch-forwarded-url>)
++Applied-Upstream: <version>, (<commit-url>|commit:<commid-id>)
++Reviewed-By: <name and email of someone who approved/reviewed the patch>
++Last-Update: 2023-06-16
++
++--- gst-plugins-bad1.0-1.22.0.orig/ext/wpe/WPEThreadedView.cpp
+++++ gst-plugins-bad1.0-1.22.0/ext/wpe/WPEThreadedView.cpp
++@@ -186,7 +186,11 @@ initialize_web_extensions (WebKitWebCont
++     const gchar *local_path = gst_wpe_get_devenv_extension_path ();
++     const gchar *path = g_file_test (local_path, G_FILE_TEST_IS_DIR) ? local_path : G_STRINGIFY (WPE_EXTENSION_INSTALL_DIR);
++     GST_INFO ("Loading WebExtension from %s", path);
+++#if USE_WPE2
+++    webkit_web_context_set_web_process_extensions_directory (context, path);
+++#else
++     webkit_web_context_set_web_extensions_directory (context, path);
+++#endif
++ }
++ 
++ static void
++@@ -296,6 +300,7 @@ webkit_extension_msg_received (WebKitWeb
++     GVariant *params = webkit_user_message_get_parameters (message);
++     gboolean res = TRUE;
++ 
+++    GST_TRACE_OBJECT(src, "Handling message %s", name);
++     if (!g_strcmp0(name, "gstwpe.new_stream")) {
++         guint32 id = g_variant_get_uint32 (g_variant_get_child_value (params, 0));
++         const gchar *capsstr = g_variant_get_string (g_variant_get_child_value (params, 1), NULL);
++@@ -325,6 +330,14 @@ webkit_extension_msg_received (WebKitWeb
++         webkit_extension_gerror_msg_received (src, params);
++     } else if (!g_strcmp0(name, "gstwpe.bus_message")) {
++         webkit_extension_bus_message_received (src, params);
+++    } else if (!g_strcmp0(name, "gstwpe.console_message")) {
+++        const gchar *message = g_variant_get_string (g_variant_get_child_value (params, 0), NULL);
+++        GstStructure *structure = gst_structure_new ("wpe-console-message",
+++            "message", G_TYPE_STRING, message,
+++            NULL);
+++
+++        gst_element_post_message(GST_ELEMENT(src), gst_message_new_custom(GST_MESSAGE_ELEMENT,
+++            GST_OBJECT(src), structure));
++     } else {
++         res = FALSE;
++         g_error("Unknown event: %s", name);
++@@ -347,10 +360,14 @@ WPEView* WPEContextThread::createWPEView
++     WPEView* view = nullptr;
++     dispatch([&]() mutable {
++         if (!glib.web_context) {
++-            auto *manager = webkit_website_data_manager_new_ephemeral();
+++#if USE_WPE2
+++            glib.web_context = WEBKIT_WEB_CONTEXT(g_object_new(WEBKIT_TYPE_WEB_CONTEXT, nullptr));
+++#else
+++            auto *manager = webkit_website_data_manager_new(NULL);
++             glib.web_context =
++                 webkit_web_context_new_with_website_data_manager(manager);
++             g_object_unref(manager);
+++#endif
++         }
++         view = new WPEView(glib.web_context, src, context, display, width, height);
++     });
++@@ -384,7 +401,7 @@ static gboolean s_loadFailedWithTLSError
++     return FALSE;
++ }
++ 
++-static void s_loadProgressChaned(GObject* object, GParamSpec*, gpointer data)
+++static void s_loadProgressChanged(GObject* object, GParamSpec*, gpointer data)
++ {
++     GstElement* src = GST_ELEMENT_CAST (data);
++     // The src element is locked already so we can't call
++@@ -398,7 +415,26 @@ static void s_loadProgressChaned(GObject
++     gst_object_unref (bus);
++ }
++ 
+++static void s_webProcessCrashed(WebKitWebView*, WebKitWebProcessTerminationReason reason, gpointer data)
+++{
+++    auto &view = *static_cast<WPEView *>(data);
+++    auto *src = view.src();
+++    gchar *reason_str =
+++        g_enum_to_string (WEBKIT_TYPE_WEB_PROCESS_TERMINATION_REASON, reason);
+++
+++    // In case the crash happened while doing the initial URL loading, unlock
+++    // the load completion waiting.
+++    view.notifyLoadFinished();
+++
+++    // TODO: Emit a signal here and fallback to error system if signal wasn't handled by application?
+++
+++    GST_ELEMENT_ERROR(GST_ELEMENT_CAST(src), RESOURCE, FAILED, (NULL), ("%s", reason_str));
+++
+++    g_free (reason_str);
+++}
+++
++ WPEView::WPEView(WebKitWebContext* web_context, GstWpeVideoSrc* src, GstGLContext* context, GstGLDisplay* display, int width, int height)
+++  : m_src(src)
++ {
++ #ifdef G_OS_UNIX
++ {
++@@ -406,7 +442,11 @@ WPEView::WPEView(WebKitWebContext* web_c
++ 
++         if (parent && GST_IS_WPE_SRC (parent)) {
++             audio.init_ext_sigid = g_signal_connect (web_context,
+++#if USE_WPE2
+++                              "initialize-web-process-extensions",
+++#else
++                               "initialize-web-extensions",
+++#endif
++                               G_CALLBACK (initialize_web_extensions),
++                               NULL);
++             audio.extension_msg_sigid = g_signal_connect (web_context,
++@@ -472,7 +512,8 @@ WPEView::WPEView(WebKitWebContext* web_c
++ 
++     g_signal_connect(webkit.view, "load-failed", G_CALLBACK(s_loadFailed), src);
++     g_signal_connect(webkit.view, "load-failed-with-tls-errors", G_CALLBACK(s_loadFailedWithTLSErrors), src);
++-    g_signal_connect(webkit.view, "notify::estimated-load-progress", G_CALLBACK(s_loadProgressChaned), src);
+++    g_signal_connect(webkit.view, "notify::estimated-load-progress", G_CALLBACK(s_loadProgressChanged), src);
+++    g_signal_connect(webkit.view, "web-process-terminated", G_CALLBACK(s_webProcessCrashed), this);
++ 
++     auto* settings = webkit_web_view_get_settings(webkit.view);
++     webkit_settings_set_enable_webaudio(settings, TRUE);
++@@ -697,22 +738,32 @@ void WPEView::loadUri(const gchar* uri)
++ 
++ static void s_runJavascriptFinished(GObject* object, GAsyncResult* result, gpointer user_data)
++ {
++-    WebKitJavascriptResult* js_result;
++-    GError* error = NULL;
+++    GError *error = NULL;
+++#if USE_WPE2
+++    g_autoptr(JSCValue) js_result = webkit_web_view_evaluate_javascript_finish(
+++#else
+++    g_autoptr(WebKitJavascriptResult) js_result = webkit_web_view_run_javascript_finish(
+++#endif
+++        WEBKIT_WEB_VIEW(object), result, &error);
++ 
++-    js_result = webkit_web_view_run_javascript_finish(WEBKIT_WEB_VIEW(object), result, &error);
++-    if (!js_result) {
+++    // TODO: Pass result back to signal call site using a GstPromise?
+++    (void) js_result;
+++
+++    if (error) {
++         GST_WARNING("Error running javascript: %s", error->message);
++         g_error_free(error);
++-        return;
++     }
++-    webkit_javascript_result_unref(js_result);
++ }
++ 
++ void WPEView::runJavascript(const char* script)
++ {
++     s_view->dispatch([&]() {
+++#if USE_WPE2
+++        webkit_web_view_evaluate_javascript(webkit.view, script, -1, nullptr, nullptr, nullptr,
+++                                            s_runJavascriptFinished, nullptr);
+++#else
++         webkit_web_view_run_javascript(webkit.view, script, nullptr, s_runJavascriptFinished, nullptr);
+++#endif
++     });
++ }
++ 
++@@ -748,7 +799,7 @@ struct ImageContext {
++ 
++ void WPEView::handleExportedImage(gpointer image)
++ {
++-    ImageContext* imageContext = g_slice_new(ImageContext);
+++    ImageContext* imageContext = g_new (ImageContext, 1);
++     imageContext->view = this;
++     imageContext->image = static_cast<gpointer>(image);
++     EGLImageKHR eglImage = wpe_fdo_egl_exported_image_get_egl_image(static_cast<struct wpe_fdo_egl_exported_image*>(image));
++@@ -784,7 +835,7 @@ void WPEView::s_releaseSHMBuffer(gpointe
++ {
++     SHMBufferContext* context = static_cast<SHMBufferContext*>(data);
++     context->view->releaseSHMBuffer(data);
++-    g_slice_free(SHMBufferContext, context);
+++    g_free (context);
++ }
++ 
++ void WPEView::handleExportedBuffer(struct wpe_fdo_shm_exported_buffer* buffer)
++@@ -802,7 +853,7 @@ void WPEView::handleExportedBuffer(struc
++     gsize size = width * height * 4;
++     auto* data = static_cast<uint8_t*>(wl_shm_buffer_get_data(shmBuffer));
++ 
++-    SHMBufferContext* bufferContext = g_slice_new(SHMBufferContext);
+++    SHMBufferContext* bufferContext = g_new (SHMBufferContext, 1);
++     bufferContext->view = this;
++     bufferContext->buffer = buffer;
++ 
++@@ -850,7 +901,7 @@ void WPEView::s_releaseImage(GstEGLImage
++ {
++     ImageContext* context = static_cast<ImageContext*>(data);
++     context->view->releaseImage(context->image);
++-    g_slice_free(ImageContext, context);
+++    g_free (context);
++ }
++ 
++ struct wpe_view_backend* WPEView::backend() const
++--- gst-plugins-bad1.0-1.22.0.orig/ext/wpe/WPEThreadedView.h
+++++ gst-plugins-bad1.0-1.22.0/ext/wpe/WPEThreadedView.h
++@@ -59,6 +59,10 @@ public:
++     void disconnectLoadFailedSignal();
++     void waitLoadCompletion();
++ 
+++    GstWpeVideoSrc *src() const { return m_src; }
+++
+++    void notifyLoadFinished();
+++
++ protected:
++     void handleExportedImage(gpointer);
++     void handleExportedBuffer(struct wpe_fdo_shm_exported_buffer*);
++@@ -67,7 +71,6 @@ private:
++     struct wpe_view_backend* backend() const;
++     void frameComplete();
++     void loadUriUnlocked(const gchar*);
++-    void notifyLoadFinished();
++ 
++     void releaseImage(gpointer);
++     void releaseSHMBuffer(gpointer);
++@@ -121,6 +124,7 @@ private:
++         gulong extension_msg_sigid;
++     } audio {0, 0};
++ 
+++    GstWpeVideoSrc *m_src { nullptr };
++ };
++ 
++ class WPEContextThread {
++--- gst-plugins-bad1.0-1.22.0.orig/ext/wpe/meson.build
+++++ gst-plugins-bad1.0-1.22.0/ext/wpe/meson.build
++@@ -6,16 +6,47 @@ if not wpe_feat.allowed()
++   subdir_done()
++ endif
++ 
++-wpe_dep = dependency('wpe-webkit-2.0', version : '>= 2.28', required : false)
++-if not wpe_dep.found()
++-  wpe_dep = dependency('wpe-webkit-2.0', version : '>= 2.28', required : wpe_feat)
+++# Version checks copied from Cog, licensed under MIT.
+++# https://github.com/Igalia/cog. The difference is that for the 2.0 API we
+++# require version 2.40.1, the first one without strict Application ID
+++# requirement for the WebProcess sandbox.
+++wpe_target_api_version_required = {
+++  '2.0': '>=2.40.1',
+++  '1.1': '>=2.33.1',
+++  '1.0': '>=2.28.0',
+++}
+++
+++wpe_target_api = get_option('wpe_api')
+++if wpe_target_api == 'auto'
+++  foreach try_api : ['2.0', '1.1', '1.0']
+++    wpewebkit_dep = dependency('wpe-webkit-' + try_api,
+++                               version: wpe_target_api_version_required[try_api],
+++                               required: false)
+++    if wpewebkit_dep.found()
+++      wpe_target_api = try_api
+++      break
+++    endif
+++  endforeach
+++else
+++  wpewebkit_dep = dependency('wpe-webkit-' + wpe_target_api,
+++                             version: wpe_target_api_version_required[wpe_target_api])
+++endif
+++if wpe_target_api == 'auto' or not wpewebkit_dep.found()
+++  subdir_done()
++ endif
+++
+++use_wpe2 = 0
+++if wpe_target_api == '2.0'
+++  use_wpe2 = 1
+++endif
+++gst_wpe_c_args = ['-DUSE_WPE2=@0@'.format(use_wpe2)]
+++
++ wpe_fdo_dep = dependency('wpebackend-fdo-1.0', version : '>= 1.8', required : wpe_feat)
++ egl_dep = dependency('egl', required : wpe_feat)
++ xkbcommon_dep = dependency('xkbcommon', version : '>= 0.8', required : wpe_feat)
++ wl_server_dep = dependency('wayland-server', required : wpe_feat)
++ 
++-if not (wpe_dep.found() and wpe_fdo_dep.found() and egl_dep.found() and xkbcommon_dep.found())
+++if not (wpe_fdo_dep.found() and egl_dep.found() and xkbcommon_dep.found())
++   subdir_done()
++ endif
++ 
++@@ -26,10 +57,10 @@ wpe_extension_install_dir = get_option('
++ building_wpe = true
++ gstwpe = library('gstwpe',
++   ['WPEThreadedView.cpp', 'gstwpe.cpp', 'gstwpevideosrc.cpp', 'gstwpesrcbin.cpp'],
++-  dependencies : [egl_dep, wpe_dep, wpe_fdo_dep, gstallocators_dep, gstaudio_dep, gstvideo_dep,
+++  dependencies : [egl_dep, wpewebkit_dep, wpe_fdo_dep, gstallocators_dep, gstaudio_dep, gstvideo_dep,
++     gstbase_dep, gstgl_dep, xkbcommon_dep, wl_server_dep, giounix_dep],
++   cpp_args : gst_plugins_bad_args + ['-DHAVE_CONFIG_H=1',
++-    '-DWPE_EXTENSION_INSTALL_DIR=' + wpe_extension_install_dir],
+++    '-DWPE_EXTENSION_INSTALL_DIR=' + wpe_extension_install_dir] + gst_wpe_c_args,
++   include_directories : [configinc],
++   install : true,
++   install_dir : plugins_install_dir)
++--- gst-plugins-bad1.0-1.22.0.orig/ext/wpe/wpe-extension/gstwpeextension.c
+++++ gst-plugins-bad1.0-1.22.0/ext/wpe/wpe-extension/gstwpeextension.c
++@@ -28,33 +28,73 @@
++ #include <gst/gst.h>
++ #include <gmodule.h>
++ #include <gio/gunixfdlist.h>
++-#include <wpe/webkit-web-extension.h>
++ 
++-G_MODULE_EXPORT void webkit_web_extension_initialize (WebKitWebExtension *
++-    extension);
+++GST_DEBUG_CATEGORY_STATIC (wpe_extension_debug);
+++#define GST_CAT_DEFAULT wpe_extension_debug
+++
+++#if USE_WPE2
+++#define WebKitWebExtension WebKitWebProcessExtension
+++#define extension_initialize webkit_web_process_extension_initialize
+++#define extension_send_message_to_context webkit_web_process_extension_send_message_to_context
+++#else
+++#define extension_initialize webkit_web_extension_initialize
+++#define extension_send_message_to_context webkit_web_extension_send_message_to_context
+++#endif
+++
+++G_MODULE_EXPORT void extension_initialize (WebKitWebExtension * extension);
++ 
++ static WebKitWebExtension *global_extension = NULL;
++ 
+++#if !USE_WPE2
+++static void
+++console_message_cb (WebKitWebPage * page,
+++    WebKitConsoleMessage * console_message, gpointer data)
+++{
+++  char *message = g_strdup (webkit_console_message_get_text (console_message));
+++  gst_wpe_extension_send_message (webkit_user_message_new
+++      ("gstwpe.console_message", g_variant_new ("(s)", message)), NULL, NULL,
+++      NULL);
+++  g_free (message);
+++}
+++#endif
+++
+++static void
+++web_page_created_callback (WebKitWebExtension * extension,
+++    WebKitWebPage * web_page, gpointer data)
+++{
+++  // WebKitConsoleMessage is deprecated in wpe1 and has no replacement in wpe2.
+++#if !USE_WPE2
+++  g_signal_connect (web_page, "console-message-sent",
+++      G_CALLBACK (console_message_cb), NULL);
+++#endif
+++}
+++
++ void
++-webkit_web_extension_initialize (WebKitWebExtension * extension)
+++extension_initialize (WebKitWebExtension * extension)
++ {
++   g_return_if_fail (!global_extension);
++ 
++   gst_init (NULL, NULL);
++ 
+++  GST_DEBUG_CATEGORY_INIT (wpe_extension_debug, "wpewebextension", 0,
+++      "GstWPE WebExtension");
+++
++   /* Register our own audio sink to */
++   gst_element_register (NULL, "gstwpeaudiosink", GST_RANK_PRIMARY + 500,
++       gst_wpe_audio_sink_get_type ());
++   gst_object_unref (g_object_new (gst_wpe_bus_msg_forwarder_get_type (), NULL));
++ 
++   global_extension = extension;
++-  GST_INFO_OBJECT (global_extension, "Setting as global extension.");
+++  GST_INFO ("Setting as global extension.");
+++
+++  g_signal_connect (global_extension, "page-created",
+++      G_CALLBACK (web_page_created_callback), NULL);
++ }
++ 
++ void
++ gst_wpe_extension_send_message (WebKitUserMessage * msg,
++     GCancellable * cancellable, GAsyncReadyCallback cb, gpointer udata)
++ {
++-  webkit_web_extension_send_message_to_context (global_extension, msg,
++-      cancellable, cb, udata);
+++  extension_send_message_to_context (global_extension, msg, cancellable, cb,
+++      udata);
++ }
++--- gst-plugins-bad1.0-1.22.0.orig/ext/wpe/wpe-extension/gstwpeextension.h
+++++ gst-plugins-bad1.0-1.22.0/ext/wpe/wpe-extension/gstwpeextension.h
++@@ -15,7 +15,11 @@
++ 
++ #pragma once
++ 
+++#if USE_WPE2
+++#include <wpe/webkit-web-process-extension.h>
+++#else
++ #include <wpe/webkit-web-extension.h>
+++#endif
++ #include <gio/gunixfdlist.h>
++ #include <gst/gst.h>
++ #include <gst/base/gstbasesink.h>
++--- gst-plugins-bad1.0-1.22.0.orig/ext/wpe/wpe-extension/meson.build
+++++ gst-plugins-bad1.0-1.22.0/ext/wpe/wpe-extension/meson.build
++@@ -1,7 +1,7 @@
++ library('gstwpeextension',
++   ['gstwpeextension.c', 'gstwpeaudiosink.c', 'gstwpebusmsgforwarder.c'],
++-  dependencies : [wpe_dep, gst_dep, gstbase_dep, giounix_dep],
++-  c_args : ['-DHAVE_CONFIG_H=1'],
+++  dependencies : [wpewebkit_dep, gst_dep, gstbase_dep, giounix_dep],
+++  c_args : ['-DHAVE_CONFIG_H=1'] + gst_wpe_c_args,
++   include_directories : [configinc],
++   install : true,
++   install_dir : wpe_extension_install_dir)
++--- gst-plugins-bad1.0-1.22.0.orig/meson_options.txt
+++++ gst-plugins-bad1.0-1.22.0/meson_options.txt
++@@ -181,6 +181,14 @@ option('x265', type : 'feature', value :
++ option('zbar', type : 'feature', value : 'auto', description : 'Barcode image scanner plugin using zbar library')
++ option('zxing', type : 'feature', value : 'auto', description : 'Barcode image scanner plugin using zxing-cpp library')
++ option('wpe', type : 'feature', value : 'auto', description : 'WPE Web browser plugin')
+++option(
+++  'wpe_api',
+++  type: 'combo',
+++  value: 'auto',
+++  choices: ['auto', '1.0', '1.1', '2.0'],
+++  description: 'WPE WebKit API to target (1.0 = soup2, 1.1/2.0 = soup3)'
+++)
+++
++ option('magicleap', type : 'feature', value : 'auto', description : 'Magic Leap platform support')
++ option('v4l2codecs', type : 'feature', value : 'auto', description : 'Video4Linux Stateless CODECs support')
++ option('isac', type : 'feature', value : 'auto', description : 'iSAC plugin')
+diff -uNr a/debian/rules b/debian/rules
+--- a/debian/rules	2023-02-28 06:59:59.000000000 +0800
++++ b/debian/rules	2023-06-15 12:35:07.000000000 +0800
+@@ -39,7 +39,7 @@
+ # In non-free currently
+ conf_flags += -Dfdkaac=disabled
+ 
+-ifeq (,$(filter $(DEB_HOST_ARCH),amd64 arm64 armel armhf i386 mips64el mipsel ppc64el s390x alpha hppa hurd-i386 m68k powerpc ppc64 riscv64))
++ifeq (,$(filter $(DEB_HOST_ARCH),amd64 arm64 armel armhf i386 loong64 mips64el mipsel ppc64el s390x alpha hppa hurd-i386 m68k powerpc ppc64 riscv64))
+ conf_flags += -Dopencv=disabled -Dzxing=disabled
+ endif
+ 
+@@ -112,7 +112,7 @@
+ 	dh_install -pgstreamer1.0-plugins-bad debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)/gstreamer-1.0/libgstresindvd.so
+ endif
+ 
+-ifneq (,$(filter $(DEB_HOST_ARCH),amd64 arm64 armel armhf i386 mips64el mipsel ppc64el s390x alpha hppa hurd-i386 m68k powerpc ppc64 riscv64))
++ifneq (,$(filter $(DEB_HOST_ARCH),amd64 arm64 armel armhf i386 loong64 mips64el mipsel ppc64el s390x alpha hppa hurd-i386 m68k powerpc ppc64 riscv64))
+ 	dh_install -pgstreamer1.0-plugins-bad debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)/gstreamer-1.0/libgstzxing.so
+ endif
+ 

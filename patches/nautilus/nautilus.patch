@@ -1,0 +1,50 @@
+diff -uNr a/debian/patches/fix-gcc-13-none-null-strchr.patch b/debian/patches/fix-gcc-13-none-null-strchr.patch
+--- a/debian/patches/fix-gcc-13-none-null-strchr.patch	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/fix-gcc-13-none-null-strchr.patch	2023-06-20 22:31:33.000000000 +0800
+@@ -0,0 +1,40 @@
++Description: <short summary of the patch>
++ TODO: Put a short summary on the line above and replace this paragraph
++ with a longer explanation of this change. Complete the meta-information
++ with other relevant fields (see below for details). To make it easier, the
++ information below has been extracted from the changelog. Adjust it or drop
++ it.
++ .
++ nautilus (43.2-1) unstable; urgency=medium
++ .
++   * New upstream release (LP: #2002575)
++     - Reintroduce the 67% (64px) zoom level for grid view
++   * Update standards version to 4.6.2, no changes needed
++Author: Jeremy Bicha <jbicha@ubuntu.com>
++Bug-Ubuntu: https://bugs.launchpad.net/bugs/2002575
++
++---
++The information above should follow the Patch Tagging Guidelines, please
++checkout https://dep.debian.net/deps/dep3/ to learn about the format. Here
++are templates for supplementary fields that you might want to add:
++
++Origin: (upstream|backport|vendor|other), (<patch-url>|commit:<commit-id>)
++Bug: <upstream-bugtracker-url>
++Bug-Debian: https://bugs.debian.org/<bugnumber>
++Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
++Forwarded: (no|not-needed|<patch-forwarded-url>)
++Applied-Upstream: <version>, (<commit-url>|commit:<commid-id>)
++Reviewed-By: <name and email of someone who approved/reviewed the patch>
++Last-Update: 2023-06-20
++
++--- nautilus-43.2.orig/src/nautilus-file-operations.c
+++++ nautilus-43.2/src/nautilus-file-operations.c
++@@ -4394,7 +4394,7 @@ get_unique_target_file (GFile      *src,
++             g_free (new_name);
++         }
++ 
++-        if (dest == NULL)
+++        if (dest == NULL && basename != NULL)
++         {
++             end = strrchr (basename, '.');
++             if (end != NULL)
+diff -uNr a/debian/patches/series b/debian/patches/series
+--- a/debian/patches/series	2023-01-12 04:37:05.000000000 +0800
++++ b/debian/patches/series	2023-06-20 22:31:33.000000000 +0800
+@@ -1 +1,2 @@
+ Revert-meson.build-Use-environment-to-make-warnings-fatal.patch
++fix-gcc-13-none-null-strchr.patch

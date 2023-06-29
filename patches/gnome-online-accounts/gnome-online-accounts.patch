@@ -1,0 +1,60 @@
+diff -uNr a/debian/control b/debian/control
+--- a/debian/control	2022-09-19 23:10:08.000000000 +0800
++++ b/debian/control	2023-06-21 23:04:18.000000000 +0800
+@@ -32,7 +32,7 @@
+ Homepage: https://wiki.gnome.org/Projects/GnomeOnlineAccounts
+ 
+ Package: gnome-online-accounts
+-Architecture: alpha amd64 arm64 armel armhf hppa hurd-i386 i386 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sh4 sparc64 x32
++Architecture: alpha amd64 arm64 armel armhf hppa hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sh4 sparc64 x32
+ Depends: libgoa-1.0-0b (= ${binary:Version}),
+          libgoa-backend-1.0-1 (= ${binary:Version}),
+          ${misc:Depends},
+@@ -82,7 +82,7 @@
+  the service.
+ 
+ Package: libgoa-backend-1.0-1
+-Architecture: alpha amd64 arm64 armel armhf hppa hurd-i386 i386 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sh4 sparc64 x32
++Architecture: alpha amd64 arm64 armel armhf hppa hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sh4 sparc64 x32
+ Section: libs
+ Depends: libgoa-1.0-common (>= ${source:Version}),
+          ${misc:Depends},
+@@ -97,7 +97,7 @@
+  This package contains the backend libraries used by GOA applications.
+ 
+ Package: libgoa-backend-1.0-dev
+-Architecture: alpha amd64 arm64 armel armhf hppa hurd-i386 i386 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sh4 sparc64 x32
++Architecture: alpha amd64 arm64 armel armhf hppa hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sh4 sparc64 x32
+ Section: libdevel
+ Depends: gir1.2-goa-1.0 (= ${binary:Version}),
+          libgoa-1.0-dev (= ${binary:Version}),
+diff -uNr a/debian/control.in b/debian/control.in
+--- a/debian/control.in	2022-09-19 23:10:08.000000000 +0800
++++ b/debian/control.in	2023-06-21 23:03:24.000000000 +0800
+@@ -28,7 +28,7 @@
+ Homepage: https://wiki.gnome.org/Projects/GnomeOnlineAccounts
+ 
+ Package: gnome-online-accounts
+-Architecture: alpha amd64 arm64 armel armhf hppa hurd-i386 i386 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sh4 sparc64 x32
++Architecture: alpha amd64 arm64 armel armhf hppa hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sh4 sparc64 x32
+ Depends: libgoa-1.0-0b (= ${binary:Version}),
+          libgoa-backend-1.0-1 (= ${binary:Version}),
+          ${misc:Depends},
+@@ -78,7 +78,7 @@
+  the service.
+ 
+ Package: libgoa-backend-1.0-1
+-Architecture: alpha amd64 arm64 armel armhf hppa hurd-i386 i386 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sh4 sparc64 x32
++Architecture: alpha amd64 arm64 armel armhf hppa hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sh4 sparc64 x32
+ Section: libs
+ Depends: libgoa-1.0-common (>= ${source:Version}),
+          ${misc:Depends},
+@@ -93,7 +93,7 @@
+  This package contains the backend libraries used by GOA applications.
+ 
+ Package: libgoa-backend-1.0-dev
+-Architecture: alpha amd64 arm64 armel armhf hppa hurd-i386 i386 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sh4 sparc64 x32
++Architecture: alpha amd64 arm64 armel armhf hppa hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sh4 sparc64 x32
+ Section: libdevel
+ Depends: gir1.2-goa-1.0 (= ${binary:Version}),
+          libgoa-1.0-dev (= ${binary:Version}),

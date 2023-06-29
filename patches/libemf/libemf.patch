@@ -1,0 +1,161 @@
+diff -uNr a/debian/control b/debian/control
+--- a/debian/control	2022-06-23 15:10:36.000000000 +0800
++++ b/debian/control	2023-06-07 16:10:37.000000000 +0800
+@@ -13,7 +13,7 @@
+ 
+ Package: libemf-dev
+ Section: libdevel
+-Architecture: alpha amd64 arm armeb armel armhf arm64 i386 powerpc powerpcel powerpcspe ppc64 ppc64el s390 s390x sparc sparc64 x32 riscv64
++Architecture: alpha amd64 arm armeb armel armhf arm64 i386 loong64 powerpc powerpcel powerpcspe ppc64 ppc64el s390 s390x sparc sparc64 x32 riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends}
+ Depends: libemf1 (= ${binary:Version}), ${misc:Depends}
+@@ -29,7 +29,7 @@
+  applications that use the libEMF library API.
+ 
+ Package: libemf1
+-Architecture: alpha amd64 arm armeb armel armhf arm64 i386 powerpc powerpcel powerpcspe ppc64 ppc64el s390 s390x sparc sparc64 x32 riscv64
++Architecture: alpha amd64 arm armeb armel armhf arm64 i386 loong64 powerpc powerpcel powerpcspe ppc64 ppc64el s390 s390x sparc sparc64 x32 riscv64
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends}
+ Depends: ${shlibs:Depends}, ${misc:Depends}
+@@ -62,7 +62,7 @@
+ 
+ Package: printemf
+ Section: graphics
+-Architecture: alpha amd64 arm armeb armel armhf arm64 i386 powerpc powerpcel powerpcspe ppc64 ppc64el s390 s390x sparc sparc64 x32 riscv64
++Architecture: alpha amd64 arm armeb armel armhf arm64 i386 loong64 powerpc powerpcel powerpcspe ppc64 ppc64el s390 s390x sparc sparc64 x32 riscv64
+ Pre-Depends: ${misc:Pre-Depends}
+ Depends: ${shlibs:Depends}, libemf1 (>= ${source:Upstream-Version}), ${misc:Depends}
+ Description: Enhanced Metafile library (executable)
+diff -uNr a/debian/patches/0007-add-support-loong64.patch b/debian/patches/0007-add-support-loong64.patch
+--- a/debian/patches/0007-add-support-loong64.patch	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/0007-add-support-loong64.patch	2023-06-07 16:11:11.000000000 +0800
+@@ -0,0 +1,119 @@
++Description: <short summary of the patch>
++ TODO: Put a short summary on the line above and replace this paragraph
++ with a longer explanation of this change. Complete the meta-information
++ with other relevant fields (see below for details). To make it easier, the
++ information below has been extracted from the changelog. Adjust it or drop
++ it.
++ .
++ libemf (1.0.13-5) unstable; urgency=medium
++ .
++   * Patch to actually support riscv64 (closes: #1013922) kindly provided
++     by Bo YU <tsu.yubo@gmail.com>
++Author: Barak A. Pearlmutter <bap@debian.org>
++Bug-Debian: https://bugs.debian.org/1013922
++
++---
++The information above should follow the Patch Tagging Guidelines, please
++checkout https://dep.debian.net/deps/dep3/ to learn about the format. Here
++are templates for supplementary fields that you might want to add:
++
++Origin: (upstream|backport|vendor|other), (<patch-url>|commit:<commit-id>)
++Bug: <upstream-bugtracker-url>
++Bug-Debian: https://bugs.debian.org/<bugnumber>
++Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
++Forwarded: (no|not-needed|<patch-forwarded-url>)
++Applied-Upstream: <version>, (<commit-url>|commit:<commid-id>)
++Reviewed-By: <name and email of someone who approved/reviewed the patch>
++Last-Update: 2023-06-07
++
++--- libemf-1.0.13.orig/include/libEMF/wine/winnt.h
+++++ libemf-1.0.13/include/libEMF/wine/winnt.h
++@@ -73,6 +73,9 @@
++ # undef  WORDS_BIGENDIAN
++ # undef  BITFIELDS_BIGENDIAN
++ # undef  ALLOW_UNALIGNED_ACCESS
+++#elif defined(__loongarch64)
+++# undef  WORDS_BIGENDIAN
+++# undef  BITFIELDS_BIGENDIAN
++ #elif !defined(RC_INVOKED)
++ # error Unknown CPU architecture!
++ #endif
++@@ -1654,7 +1657,77 @@ typedef struct _CONTEXT {
++     /* FIXME */
++ } CONTEXT;
++ 
++-#endif /* __riscv64__ */
+++#endif /* __riscv64__ */
+++#ifdef __loongarch64
+++/*
+++ * FIXME:
+++ *
+++ * There is not yet an official CONTEXT structure defined for the
+++ * loongarch64 architecture (64-bit LE), so I just made one up.
+++ *
+++ */
+++
+++#define CONTEXT_LOONGARCH64             0x4000000
+++#define CONTEXT_CONTROL         (CONTEXT_LOONGARCH64 | 0x00000001)
+++#define CONTEXT_INTEGER         (CONTEXT_LOONGARCH64 | 0x00000002)
+++#define CONTEXT_FLOATING_POINT  (CONTEXT_LOONGARCH64 | 0x00000004)
+++#define CONTEXT_DEBUG_REGISTERS (CONTEXT_LOONGARCH64 | 0x00000008)
+++
+++#define CONTEXT_FULL (CONTEXT_CONTROL | CONTEXT_INTEGER)
+++
+++#define EXCEPTION_READ_FAULT    0
+++#define EXCEPTION_WRITE_FAULT   1
+++#define EXCEPTION_EXECUTE_FAULT 8
+++
+++typedef struct _CONTEXT {
+++    ULONG ContextFlags;
+++
+++    /* This section is specified/returned if the ContextFlags word contains
+++       the flag CONTEXT_INTEGER. */
+++    ULONGLONG X0;
+++    ULONGLONG X1;
+++    ULONGLONG X2;
+++    ULONGLONG X3;
+++    ULONGLONG X4;
+++    ULONGLONG X5;
+++    ULONGLONG X6;
+++    ULONGLONG X7;
+++    ULONGLONG X8;
+++    ULONGLONG X9;
+++    ULONGLONG X10;
+++    ULONGLONG X11;
+++    ULONGLONG X12;
+++    ULONGLONG X13;
+++    ULONGLONG X14;
+++    ULONGLONG X15;
+++    ULONGLONG X16;
+++    ULONGLONG X17;
+++    ULONGLONG X18;
+++    ULONGLONG X19;
+++    ULONGLONG X20;
+++    ULONGLONG X21;
+++    ULONGLONG X22;
+++    ULONGLONG X23;
+++    ULONGLONG X24;
+++    ULONGLONG X25;
+++    ULONGLONG X26;
+++    ULONGLONG X27;
+++    ULONGLONG X28;
+++    ULONGLONG X29;
+++    ULONGLONG X30;
+++    ULONGLONG X31;
+++
+++    /* These are selected by CONTEXT_CONTROL */
+++    ULONGLONG Sp;
+++    ULONGLONG Pc;
+++    ULONGLONG PState;
+++
+++    /* These are selected by CONTEXT_FLOATING_POINT */
+++    /* FIXME */
+++} CONTEXT;
+++
+++
+++#endif /* __loongarch__ */
++ 
++ 
++ #if !defined(CONTEXT_FULL) && !defined(RC_INVOKED)
+diff -uNr a/debian/patches/series b/debian/patches/series
+--- a/debian/patches/series	2022-06-29 21:15:38.000000000 +0800
++++ b/debian/patches/series	2023-06-07 16:11:05.000000000 +0800
+@@ -4,3 +4,4 @@
+ 0004-add-build-time-doxygen-support-via-autotools.patch
+ 0005-typo-in-doc-string.patch
+ 0006-add-support-riscv64.patch
++0007-add-support-loong64.patch

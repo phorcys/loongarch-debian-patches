@@ -1,0 +1,33 @@
+diff -uNr a/debian/control b/debian/control
+--- a/debian/control	2023-04-16 00:27:51.000000000 +0800
++++ b/debian/control	2023-06-16 19:10:33.000000000 +0800
+@@ -109,7 +109,7 @@
+ 
+ Package: libvirt-login-shell
+ Section: admin
+-Architecture: alpha amd64 arm64 armel armhf hppa i386 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sh4 sparc64 x32
++Architecture: alpha amd64 arm64 armel armhf hppa i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sh4 sparc64 x32
+ Depends:
+  libvirt-clients (= ${binary:Version}),
+  libvirt-daemon-driver-lxc (= ${binary:Version}),
+@@ -197,7 +197,7 @@
+ 
+ Package: libvirt-daemon-driver-lxc
+ Section: admin
+-Architecture: alpha amd64 arm64 armel armhf hppa i386 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sh4 sparc64 x32
++Architecture: alpha amd64 arm64 armel armhf hppa i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sh4 sparc64 x32
+ Multi-Arch: no
+ Depends:
+  libvirt-daemon (= ${binary:Version}),
+diff -uNr a/debian/rules b/debian/rules
+--- a/debian/rules	2023-04-16 00:27:51.000000000 +0800
++++ b/debian/rules	2023-06-16 19:09:00.000000000 +0800
+@@ -12,7 +12,7 @@
+ DPKG_EXPORT_BUILDFLAGS = 1
+ include /usr/share/dpkg/default.mk
+ 
+-ARCHES_LXC  = alpha amd64 arm64 armel armhf hppa i386 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sh4 sparc64 x32
++ARCHES_LXC  = alpha amd64 arm64 armel armhf hppa i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sh4 sparc64 x32
+ ARCHES_XEN  = amd64 arm64 armhf
+ ARCHES_VBOX = amd64 i386
+ 

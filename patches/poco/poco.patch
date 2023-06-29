@@ -1,0 +1,70 @@
+diff -uNr a/debian/patches/series b/debian/patches/series
+--- a/debian/patches/series	2021-11-27 20:38:37.000000000 +0800
++++ b/debian/patches/series	2023-06-20 16:25:51.000000000 +0800
+@@ -8,3 +8,4 @@
+ 0011-Set-POCO_NO_FPENVIRONMENT-for-armel.patch
+ 0012-Disable-failing-tests.patch
+ 0010-fix-missing-expat-definition.patch
++support-loong64.patch
+diff -uNr a/debian/patches/support-loong64.patch b/debian/patches/support-loong64.patch
+--- a/debian/patches/support-loong64.patch	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/support-loong64.patch	2023-06-20 16:25:51.000000000 +0800
+@@ -0,0 +1,58 @@
++Description: <short summary of the patch>
++ TODO: Put a short summary on the line above and replace this paragraph
++ with a longer explanation of this change. Complete the meta-information
++ with other relevant fields (see below for details). To make it easier, the
++ information below has been extracted from the changelog. Adjust it or drop
++ it.
++ .
++ poco (1.11.0-3) unstable; urgency=medium
++ .
++   * Fix cmake files (Closes: #1000656)
++Author: Jochen Sprickerhof <jspricke@debian.org>
++Bug-Debian: https://bugs.debian.org/1000656
++
++---
++The information above should follow the Patch Tagging Guidelines, please
++checkout https://dep.debian.net/deps/dep3/ to learn about the format. Here
++are templates for supplementary fields that you might want to add:
++
++Origin: (upstream|backport|vendor|other), (<patch-url>|commit:<commit-id>)
++Bug: <upstream-bugtracker-url>
++Bug-Debian: https://bugs.debian.org/<bugnumber>
++Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
++Forwarded: (no|not-needed|<patch-forwarded-url>)
++Applied-Upstream: <version>, (<commit-url>|commit:<commid-id>)
++Reviewed-By: <name and email of someone who approved/reviewed the patch>
++Last-Update: 2023-06-20
++
++--- poco-1.11.0.orig/Foundation/include/Poco/Platform.h
+++++ poco-1.11.0/Foundation/include/Poco/Platform.h
++@@ -136,7 +136,7 @@
++ #define POCO_ARCH_ARM64   0x0f // same as POCO_ARCH_AARCH64
++ #define POCO_ARCH_RISCV64 0x10
++ #define POCO_ARCH_RISCV32 0x11
++-
+++#define POCO_ARCH_LOONGARCH64 0x12
++ 
++ #if defined(__ALPHA) || defined(__alpha) || defined(__alpha__) || defined(_M_ALPHA)
++ 	#define POCO_ARCH POCO_ARCH_ALPHA
++@@ -154,6 +154,9 @@
++ #elif defined(__x86_64__) || defined(_M_X64)
++ 	#define POCO_ARCH POCO_ARCH_AMD64
++ 	#define POCO_ARCH_LITTLE_ENDIAN 1
+++#elif defined(__loongarch__) || defined(__loongarch64)
+++	#define POCO_ARCH POCO_ARCH_LOONGARCH64
+++	#define POCO_ARCH_LITTLE_ENDIAN 1
++ #elif defined(__mips__) || defined(__mips) || defined(__MIPS__) || defined(_M_MRX000)
++ 	#define POCO_ARCH POCO_ARCH_MIPS
++ 	#if defined(POCO_OS_FAMILY_WINDOWS)
++--- poco-1.11.0.orig/Foundation/src/utils.h
+++++ poco-1.11.0/Foundation/src/utils.h
++@@ -93,6 +93,7 @@ int main(int argc, char** argv) {
++ #if defined(_M_X64) || defined(__x86_64__) || \
++     defined(__ARMEL__) || defined(__avr32__) || defined(_M_ARM) || defined(_M_ARM64) || \
++     defined(__hppa__) || defined(__ia64__) || \
+++    defined(__loongarch__) || defined(__loongarch64) || \
++     defined(__mips__) || \
++     defined(__powerpc__) || defined(__ppc__) || defined(__ppc64__) || \
++     defined(_POWER) || defined(_ARCH_PPC) || defined(_ARCH_PPC64) || \

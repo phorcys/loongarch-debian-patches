@@ -1,0 +1,47 @@
+diff -uNr a/debian/control b/debian/control
+--- a/debian/control	2020-08-19 21:42:39.000000000 +0800
++++ b/debian/control	2023-06-27 18:49:14.000000000 +0800
+@@ -11,7 +11,7 @@
+ 
+ Package: libefivar-dev
+ Section: libdevel
+-Architecture: amd64 i386 ia64 armhf arm64 armel riscv64 x32
++Architecture: amd64 i386 ia64 armhf arm64 armel loong64 riscv64 x32
+ Multi-Arch: same
+ Depends: libefivar1 (= ${binary:Version}), ${misc:Depends}
+ Description: Development headers for libefivar
+@@ -19,7 +19,7 @@
+ 
+ Package: libefiboot-dev
+ Section: libdevel
+-Architecture: amd64 i386 ia64 armhf arm64 armel riscv64 x32
++Architecture: amd64 i386 ia64 armhf arm64 armel loong64 riscv64 x32
+ Multi-Arch: same
+ Depends: libefiboot1 (= ${binary:Version}), ${misc:Depends}
+ Conflicts: libefivar-dev (<< 27-1)
+@@ -29,14 +29,14 @@
+ 
+ Package: efivar
+ Section: admin
+-Architecture: amd64 i386 ia64 armhf arm64 armel riscv64 x32
++Architecture: amd64 i386 ia64 armhf arm64 armel loong64 riscv64 x32
+ Multi-Arch: foreign
+ Depends: ${shlibs:Depends}, ${misc:Depends}, libefivar1 (= ${binary:Version}), libefiboot1 (= ${binary:Version})
+ Description: Tools to manage UEFI variables
+  efivar provides a simple command line interface to the UEFI variable facility.
+ 
+ Package: libefiboot1
+-Architecture: amd64 i386 ia64 armhf arm64 armel riscv64 x32
++Architecture: amd64 i386 ia64 armhf arm64 armel loong64 riscv64 x32
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends}
+ Depends: ${shlibs:Depends}, ${misc:Depends}
+@@ -45,7 +45,7 @@
+  Library to allow for the manipulation of UEFI variables related to booting.
+ 
+ Package: libefivar1
+-Architecture: amd64 i386 ia64 armhf arm64 armel riscv64 x32
++Architecture: amd64 i386 ia64 armhf arm64 armel loong64 riscv64 x32
+ Multi-Arch: same
+ Pre-Depends: ${misc:Pre-Depends}
+ Depends: ${shlibs:Depends}, ${misc:Depends}

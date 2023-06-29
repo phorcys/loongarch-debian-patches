@@ -1,0 +1,1327 @@
+diff -uNr a/debian/patches/remove-statx.patch b/debian/patches/remove-statx.patch
+--- a/debian/patches/remove-statx.patch	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/remove-statx.patch	2023-05-25 21:00:29.000000000 +0800
+@@ -0,0 +1,972 @@
++From e3a0f7bae41eaf18c28c6731cc4961c426d0322d Mon Sep 17 00:00:00 2001
++From: Ben Hutchings <ben@decadent.org.uk>
++Date: Sat, 14 Jan 2023 01:28:19 +0100
++Subject: [klibc] stat: Make all stat calls wrappers for statx()
++
++fstat(), fstatat(), lstat(), and stat() don't have direct replacements
++that use 64-bit time fields on 32-bit architectures and on mips64.
++Instead, we have to use the statx() system call which uses a different
++buffer structure.
++
++In preparation for using 64-bit time everywhere:
++
++- Add a statx() system call wrapper
++- Replace the architecture-dependent struct stat definitions
++  with a sensible klibc-specific definition
++- Make fstatat() call statx() and convert the returned struct statx
++  to struct stat
++- Make {f,l,}stat() wrappers for fstatat()
++
++Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
++---
++ usr/include/arch/alpha/klibc/archstat.h   | 28 ----------------
++ usr/include/arch/arm/klibc/archstat.h     | 40 ----------------------
++ usr/include/arch/arm64/klibc/archstat.h   | 28 ----------------
++ usr/include/arch/i386/klibc/archstat.h    | 38 ---------------------
++ usr/include/arch/ia64/klibc/archstat.h    | 26 --------------
++ usr/include/arch/m68k/klibc/archstat.h    | 38 ---------------------
++ usr/include/arch/mips/klibc/archstat.h    | 42 -----------------------
++ usr/include/arch/mips64/klibc/archstat.h  | 38 ---------------------
++ usr/include/arch/parisc/klibc/archstat.h  | 29 ----------------
++ usr/include/arch/ppc/klibc/archstat.h     | 30 -----------------
++ usr/include/arch/ppc64/klibc/archstat.h   | 28 ----------------
++ usr/include/arch/riscv64/klibc/archstat.h | 28 ----------------
++ usr/include/arch/s390/klibc/archstat.h    | 56 -------------------------------
++ usr/include/arch/sh/klibc/archstat.h      | 38 ---------------------
++ usr/include/arch/sparc/klibc/archstat.h   | 37 --------------------
++ usr/include/arch/sparc64/klibc/archstat.h | 30 -----------------
++ usr/include/arch/x86_64/klibc/archstat.h  | 28 ----------------
++ usr/include/klibc/stathelp.h              | 24 -------------
++ usr/include/sys/stat.h                    | 32 +++++++++++++-----
++ usr/klibc/Kbuild                          |  4 +--
++ usr/klibc/SYSCALLS.def                    |  9 +----
++ usr/klibc/fstat.c                         | 10 ++++++
++ usr/klibc/fstatat.c                       | 36 ++++++++++++++++++++
++ usr/klibc/lstat.c                         |  4 ---
++ usr/klibc/stat.c                          |  4 ---
++ 25 files changed, 72 insertions(+), 633 deletions(-)
++ delete mode 100644 usr/include/arch/alpha/klibc/archstat.h
++ delete mode 100644 usr/include/arch/arm/klibc/archstat.h
++ delete mode 100644 usr/include/arch/arm64/klibc/archstat.h
++ delete mode 100644 usr/include/arch/i386/klibc/archstat.h
++ delete mode 100644 usr/include/arch/ia64/klibc/archstat.h
++ delete mode 100644 usr/include/arch/m68k/klibc/archstat.h
++ delete mode 100644 usr/include/arch/mips/klibc/archstat.h
++ delete mode 100644 usr/include/arch/mips64/klibc/archstat.h
++ delete mode 100644 usr/include/arch/parisc/klibc/archstat.h
++ delete mode 100644 usr/include/arch/ppc/klibc/archstat.h
++ delete mode 100644 usr/include/arch/ppc64/klibc/archstat.h
++ delete mode 100644 usr/include/arch/riscv64/klibc/archstat.h
++ delete mode 100644 usr/include/arch/s390/klibc/archstat.h
++ delete mode 100644 usr/include/arch/sh/klibc/archstat.h
++ delete mode 100644 usr/include/arch/sparc/klibc/archstat.h
++ delete mode 100644 usr/include/arch/sparc64/klibc/archstat.h
++ delete mode 100644 usr/include/arch/x86_64/klibc/archstat.h
++ delete mode 100644 usr/include/klibc/stathelp.h
++ create mode 100644 usr/klibc/fstat.c
++ create mode 100644 usr/klibc/fstatat.c
++
++diff --git a/usr/include/arch/alpha/klibc/archstat.h b/usr/include/arch/alpha/klibc/archstat.h
++deleted file mode 100644
++index 66e29be343a38..0000000000000
++--- a/usr/include/arch/alpha/klibc/archstat.h
+++++ /dev/null
++@@ -1,28 +0,0 @@
++-#ifndef _KLIBC_ARCHSTAT_H
++-#define _KLIBC_ARCHSTAT_H
++-
++-#include <klibc/stathelp.h>
++-
++-#define _STATBUF_ST_NSEC
++-
++-struct stat {
++-	__stdev64	(st_dev);
++-	unsigned long	st_ino;
++-	__stdev64	(st_rdev);
++-	long		st_size;
++-	unsigned long	st_blocks;
++-
++-	unsigned int	st_mode;
++-	unsigned int	st_uid;
++-	unsigned int	st_gid;
++-	unsigned int	st_blksize;
++-	unsigned int	st_nlink;
++-	unsigned int	__pad0;
++-
++-	struct timespec st_atim;
++-	struct timespec st_mtim;
++-	struct timespec st_ctim;
++-  	long		__unused[3];
++-};
++-
++-#endif
++diff --git a/usr/include/arch/arm/klibc/archstat.h b/usr/include/arch/arm/klibc/archstat.h
++deleted file mode 100644
++index 95bbc9e898984..0000000000000
++--- a/usr/include/arch/arm/klibc/archstat.h
+++++ /dev/null
++@@ -1,40 +0,0 @@
++-#ifndef _KLIBC_ARCHSTAT_H
++-#define _KLIBC_ARCHSTAT_H
++-
++-#include <klibc/stathelp.h>
++-
++-#define _STATBUF_ST_NSEC
++-
++-/* This matches struct stat64 in glibc2.1, hence the absolutely
++- * insane amounts of padding around dev_t's.
++- * Note: The kernel zero's the padded region because glibc might read them
++- * in the hope that the kernel has stretched to using larger sizes.
++- */
++-
++-struct stat {
++-	__stdev64	(st_dev);
++-	unsigned char   __pad0[4];
++-
++-	unsigned long	__st_ino;
++-	unsigned int	st_mode;
++-	unsigned int	st_nlink;
++-
++-	unsigned long	st_uid;
++-	unsigned long	st_gid;
++-
++-	__stdev64	(st_rdev);
++-	unsigned char   __pad3[4];
++-
++-	long long	st_size;
++-	unsigned long	st_blksize;
++-
++-	unsigned long long  st_blocks;	/* Number 512-byte blocks allocated. */
++-
++-	struct timespec st_atim;
++-	struct timespec st_mtim;
++-	struct timespec st_ctim;
++-
++-	unsigned long long	st_ino;
++-};
++-
++-#endif
++diff --git a/usr/include/arch/arm64/klibc/archstat.h b/usr/include/arch/arm64/klibc/archstat.h
++deleted file mode 100644
++index f5bfa80a5d4ce..0000000000000
++--- a/usr/include/arch/arm64/klibc/archstat.h
+++++ /dev/null
++@@ -1,28 +0,0 @@
++-#ifndef _KLIBC_ARCHSTAT_H
++-#define _KLIBC_ARCHSTAT_H
++-
++-#include <klibc/stathelp.h>
++-
++-#define _STATBUF_ST_NSEC
++-
++-struct stat {
++-	__stdev64	(st_dev);	/* Device */
++-	unsigned long	st_ino;		/* File serial number */
++-	unsigned int	st_mode;	/* File mode */
++-	unsigned int	st_nlink;	/* Link count */
++-	unsigned int	st_uid;		/* User ID of the file's owner */
++-	unsigned int	st_gid;		/* Group ID of the file's group */
++-	__stdev64	(st_rdev);	/* Device number, if device */
++-	unsigned long	__pad1;
++-	long		st_size;	/* Size of file, in bytes */
++-	int		st_blksize;	/* Optimal block size for I/O */
++-	int		__pad2;
++-	long		st_blocks;	/* Number 512-byte blocks allocated */
++-	struct timespec st_atim;	/* Time of last access */
++-	struct timespec st_mtim;	/* Time of last modification */
++-	struct timespec st_ctim;	/* Time of last status change */
++-	unsigned int	__unused4;
++-	unsigned int	__unused5;
++-};
++-
++-#endif
++diff --git a/usr/include/arch/i386/klibc/archstat.h b/usr/include/arch/i386/klibc/archstat.h
++deleted file mode 100644
++index c00f955d7cf99..0000000000000
++--- a/usr/include/arch/i386/klibc/archstat.h
+++++ /dev/null
++@@ -1,38 +0,0 @@
++-#ifndef _KLIBC_ARCHSTAT_H
++-#define _KLIBC_ARCHSTAT_H
++-
++-#include <klibc/stathelp.h>
++-
++-#define _STATBUF_ST_NSEC
++-
++-/* This matches struct stat64 in glibc2.1, hence the absolutely
++- * insane amounts of padding around dev_t's.
++- */
++-struct stat {
++-	__stdev64	(st_dev);
++-	unsigned char	__pad0[4];
++-
++-	unsigned long	__st_ino;
++-
++-	unsigned int	st_mode;
++-	unsigned int	st_nlink;
++-
++-	unsigned long	st_uid;
++-	unsigned long	st_gid;
++-
++-	__stdev64	(st_rdev);
++-	unsigned char	__pad3[4];
++-
++-	long long	st_size;
++-	unsigned long	st_blksize;
++-
++-	unsigned long long st_blocks;	/* Number 512-byte blocks allocated. */
++-
++-	struct timespec st_atim;
++-	struct timespec st_mtim;
++-	struct timespec st_ctim;
++-
++-	unsigned long long	st_ino;
++-};
++-
++-#endif
++diff --git a/usr/include/arch/ia64/klibc/archstat.h b/usr/include/arch/ia64/klibc/archstat.h
++deleted file mode 100644
++index ff38e41810016..0000000000000
++--- a/usr/include/arch/ia64/klibc/archstat.h
+++++ /dev/null
++@@ -1,26 +0,0 @@
++-#ifndef _KLIBC_ARCHSTAT_H
++-#define _KLIBC_ARCHSTAT_H
++-
++-#include <klibc/stathelp.h>
++-
++-#define _STATBUF_ST_NSEC
++-
++-struct stat {
++-	__stdev64	(st_dev);
++-	unsigned long	st_ino;
++-	unsigned long	st_nlink;
++-	unsigned int	st_mode;
++-	unsigned int	st_uid;
++-	unsigned int	st_gid;
++-	unsigned int	__pad0;
++-	__stdev64	(st_rdev);
++-	unsigned long	st_size;
++-	struct timespec st_atim;
++-	struct timespec st_mtim;
++-	struct timespec st_ctim;
++-	unsigned long	st_blksize;
++-	long		st_blocks;
++-	unsigned long	__unused[3];
++-};
++-
++-#endif
++diff --git a/usr/include/arch/m68k/klibc/archstat.h b/usr/include/arch/m68k/klibc/archstat.h
++deleted file mode 100644
++index dce25f97823c8..0000000000000
++--- a/usr/include/arch/m68k/klibc/archstat.h
+++++ /dev/null
++@@ -1,38 +0,0 @@
++-#ifndef _KLIBC_ARCHSTAT_H
++-#define _KLIBC_ARCHSTAT_H
++-
++-#include <klibc/stathelp.h>
++-
++-#define _STATBUF_ST_NSEC
++-
++-/* This matches struct stat64 in glibc2.1, hence the absolutely
++- * insane padding around dev_t's.
++- */
++-struct stat {
++-	__stdev64	(st_dev);
++-	unsigned char	__pad1[2];
++-
++-	unsigned long	__st_ino;
++-
++-	unsigned int	st_mode;
++-	unsigned int	st_nlink;
++-
++-	unsigned long	st_uid;
++-	unsigned long	st_gid;
++-
++-	__stdev64	(st_rdev);
++-	unsigned char	__pad3[2];
++-
++-	long long	st_size;
++-	unsigned long	st_blksize;
++-
++-	unsigned long long	st_blocks;	/* Number 512-byte blocks allocated. */
++-
++-	struct timespec st_atim;
++-	struct timespec st_mtim;
++-	struct timespec st_ctim;
++-
++-	unsigned long long	st_ino;
++-};
++-
++-#endif
++diff --git a/usr/include/arch/mips/klibc/archstat.h b/usr/include/arch/mips/klibc/archstat.h
++deleted file mode 100644
++index b06686f078a4a..0000000000000
++--- a/usr/include/arch/mips/klibc/archstat.h
+++++ /dev/null
++@@ -1,42 +0,0 @@
++-#ifndef _KLIBC_ARCHSTAT_H
++-#define _KLIBC_ARCHSTAT_H
++-
++-#include <sys/types.h>
++-
++-#define _STATBUF_ST_NSEC
++-
++-/*
++- * This matches struct stat64 in glibc2.1, hence the absolutely insane
++- * amounts of padding around dev_t's.  The memory layout is the same as of
++- * struct stat of the 64-bit kernel, which makes this one of the sanest
++- * 32-bit struct stats.
++- */
++-
++-struct stat {
++-	unsigned int	st_dev;
++-	unsigned long	st_pad0[3];	/* Reserved for st_dev expansion  */
++-
++-	unsigned long long	st_ino;
++-
++-	mode_t		st_mode;
++-	__u32		st_nlink;
++-
++-	uid_t		st_uid;
++-	gid_t		st_gid;
++-
++-	unsigned int	st_rdev;
++-	unsigned long	st_pad1[3];	/* Reserved for st_rdev expansion  */
++-
++-	long long	st_size;
++-
++-	struct timespec		st_atim;
++-	struct timespec		st_mtim;
++-	struct timespec		st_ctim;
++-
++-	unsigned long	st_blksize;
++-	unsigned long	st_pad2;
++-
++-	long long	st_blocks;
++-};
++-
++-#endif
++diff --git a/usr/include/arch/mips64/klibc/archstat.h b/usr/include/arch/mips64/klibc/archstat.h
++deleted file mode 100644
++index 16f50c9edaa08..0000000000000
++--- a/usr/include/arch/mips64/klibc/archstat.h
+++++ /dev/null
++@@ -1,38 +0,0 @@
++-#ifndef _KLIBC_ARCHSTAT_H
++-#define _KLIBC_ARCHSTAT_H
++-
++-#include <sys/types.h>
++-
++-struct stat {
++-	unsigned int		st_dev;
++-	unsigned int		st_pad0[3]; /* Reserved for st_dev expansion */
++-
++-	unsigned long		st_ino;
++-
++-	mode_t			st_mode;
++-	__u32			st_nlink;
++-
++-	uid_t			st_uid;
++-	gid_t			st_gid;
++-
++-	unsigned int		st_rdev;
++-	unsigned int		st_pad1[3]; /* Reserved for st_rdev expansion */
++-
++-	off_t			st_size;
++-
++-	unsigned int		st_atime;
++-	unsigned int		st_atimensec;
++-
++-	unsigned int		st_mtime;
++-	unsigned int		st_mtimensec;
++-
++-	unsigned int		st_ctime;
++-	unsigned int		st_ctimensec;
++-
++-	unsigned int		st_blksize;
++-	unsigned int		st_pad2;
++-
++-	unsigned long		st_blocks;
++-};
++-
++-#endif
++diff --git a/usr/include/arch/parisc/klibc/archstat.h b/usr/include/arch/parisc/klibc/archstat.h
++deleted file mode 100644
++index 0b8ef8d632694..0000000000000
++--- a/usr/include/arch/parisc/klibc/archstat.h
+++++ /dev/null
++@@ -1,29 +0,0 @@
++-#ifndef _KLIBC_ARCHSTAT_H
++-#define _KLIBC_ARCHSTAT_H
++-
++-#include <klibc/stathelp.h>
++-
++-#define _STATBUF_ST_NSEC
++-
++-struct stat {
++-	__stdev64		(st_dev);
++-	unsigned int		__pad1;
++-
++-	unsigned int		__st_ino;	/* Not actually filled in */
++-	unsigned int		st_mode;
++-	unsigned int		st_nlink;
++-	unsigned int		st_uid;
++-	unsigned int		st_gid;
++-	__stdev64		(st_rdev);
++-	unsigned int		__pad2;
++-	signed long long	st_size;
++-	signed int		st_blksize;
++-
++-	signed long long	st_blocks;
++-	struct timespec		st_atim;
++-	struct timespec		st_mtim;
++-	struct timespec		st_ctim;
++-	unsigned long long	st_ino;
++-};
++-
++-#endif
++diff --git a/usr/include/arch/ppc/klibc/archstat.h b/usr/include/arch/ppc/klibc/archstat.h
++deleted file mode 100644
++index 9e31f4a2ea8fc..0000000000000
++--- a/usr/include/arch/ppc/klibc/archstat.h
+++++ /dev/null
++@@ -1,30 +0,0 @@
++-#ifndef _KLIBC_ARCHSTAT_H
++-#define _KLIBC_ARCHSTAT_H
++-
++-#include <klibc/stathelp.h>
++-
++-#define _STATBUF_ST_NSEC
++-
++-/* This matches struct stat64 in glibc2.1.
++- */
++-struct stat {
++-	__stdev64 (st_dev);		/* Device. */
++-	unsigned long long st_ino;	/* File serial number.  */
++-	unsigned int st_mode;		/* File mode.  */
++-	unsigned int st_nlink;		/* Link count.  */
++-	unsigned int st_uid;		/* User ID of the file's owner.  */
++-	unsigned int st_gid;		/* Group ID of the file's group. */
++-	__stdev64 (st_rdev); 		/* Device number, if device.  */
++-	unsigned short int __pad2;
++-	long long st_size;		/* Size of file, in bytes.  */
++-	long st_blksize;		/* Optimal block size for I/O.  */
++-
++-	long long st_blocks;		/* Number 512-byte blocks allocated. */
++-	struct timespec st_atim;	/* Time of last access.  */
++-	struct timespec st_mtim;	/* Time of last modification.  */
++-	struct timespec st_ctim;	/* Time of last status change.  */
++-	unsigned long int __unused4;
++-	unsigned long int __unused5;
++-};
++-
++-#endif
++diff --git a/usr/include/arch/ppc64/klibc/archstat.h b/usr/include/arch/ppc64/klibc/archstat.h
++deleted file mode 100644
++index 0bbbff3b53b58..0000000000000
++--- a/usr/include/arch/ppc64/klibc/archstat.h
+++++ /dev/null
++@@ -1,28 +0,0 @@
++-#ifndef _KLIBC_ARCHSTAT_H
++-#define _KLIBC_ARCHSTAT_H
++-
++-#include <klibc/stathelp.h>
++-
++-#define _STATBUF_ST_NSEC
++-
++-struct stat {
++-	__stdev64	(st_dev);
++-	ino_t		st_ino;
++-	unsigned long	st_nlink;
++-	mode_t		st_mode;
++-	uid_t 		st_uid;
++-	gid_t 		st_gid;
++-	unsigned int	__pad1;
++-	__stdev64	(st_rdev);
++-	off_t		st_size;
++-	unsigned long  	st_blksize;
++-	unsigned long  	st_blocks;
++-	struct timespec st_atim;	/* Time of last access.  */
++-	struct timespec st_mtim;	/* Time of last modification.  */
++-	struct timespec st_ctim;	/* Time of last status change.  */
++-	unsigned long  	__unused4;
++-	unsigned long  	__unused5;
++-	unsigned long  	__unused6;
++-};
++-
++-#endif
++diff --git a/usr/include/arch/riscv64/klibc/archstat.h b/usr/include/arch/riscv64/klibc/archstat.h
++deleted file mode 100644
++index f5bfa80a5d4ce..0000000000000
++--- a/usr/include/arch/riscv64/klibc/archstat.h
+++++ /dev/null
++@@ -1,28 +0,0 @@
++-#ifndef _KLIBC_ARCHSTAT_H
++-#define _KLIBC_ARCHSTAT_H
++-
++-#include <klibc/stathelp.h>
++-
++-#define _STATBUF_ST_NSEC
++-
++-struct stat {
++-	__stdev64	(st_dev);	/* Device */
++-	unsigned long	st_ino;		/* File serial number */
++-	unsigned int	st_mode;	/* File mode */
++-	unsigned int	st_nlink;	/* Link count */
++-	unsigned int	st_uid;		/* User ID of the file's owner */
++-	unsigned int	st_gid;		/* Group ID of the file's group */
++-	__stdev64	(st_rdev);	/* Device number, if device */
++-	unsigned long	__pad1;
++-	long		st_size;	/* Size of file, in bytes */
++-	int		st_blksize;	/* Optimal block size for I/O */
++-	int		__pad2;
++-	long		st_blocks;	/* Number 512-byte blocks allocated */
++-	struct timespec st_atim;	/* Time of last access */
++-	struct timespec st_mtim;	/* Time of last modification */
++-	struct timespec st_ctim;	/* Time of last status change */
++-	unsigned int	__unused4;
++-	unsigned int	__unused5;
++-};
++-
++-#endif
++diff --git a/usr/include/arch/s390/klibc/archstat.h b/usr/include/arch/s390/klibc/archstat.h
++deleted file mode 100644
++index ca4c822eef40e..0000000000000
++--- a/usr/include/arch/s390/klibc/archstat.h
+++++ /dev/null
++@@ -1,56 +0,0 @@
++-#ifndef _KLIBC_ARCHSTAT_H
++-#define _KLIBC_ARCHSTAT_H
++-
++-#include <klibc/stathelp.h>
++-
++-#define _STATBUF_ST_NSEC
++-
++-#ifndef __s390x__
++-
++-/* This matches struct stat64 in glibc2.1, hence the absolutely
++- * insane amounts of padding around dev_t's.
++- */
++-struct stat {
++-	__stdev64	(st_dev);
++-	unsigned int	__pad1;
++-#define STAT64_HAS_BROKEN_ST_INO	1
++-	unsigned long	__st_ino;
++-	unsigned int	st_mode;
++-	unsigned int	st_nlink;
++-	unsigned long	st_uid;
++-	unsigned long	st_gid;
++-	__stdev64	(st_rdev);
++-	unsigned int	__pad3;
++-	long long	st_size;
++-	unsigned long	st_blksize;
++-	unsigned char	__pad4[4];
++-	unsigned long	__pad5;     /* future possible st_blocks high bits */
++-	unsigned long	st_blocks;  /* Number 512-byte blocks allocated. */
++-	struct timespec st_atim;
++-	struct timespec st_mtim;
++-	struct timespec st_ctim;
++-	unsigned long long	st_ino;
++-};
++-
++-#else /* __s390x__ */
++-
++-struct stat {
++-	__stdev64	(st_dev);
++-	unsigned long	st_ino;
++-	unsigned long	st_nlink;
++-	unsigned int	st_mode;
++-	unsigned int	st_uid;
++-	unsigned int	st_gid;
++-	unsigned int	__pad1;
++-	__stdev64	(st_rdev);
++-	unsigned long	st_size;
++-	struct timespec	st_atim;
++-	struct timespec	st_mtim;
++-	struct timespec	st_ctim;
++-	unsigned long	st_blksize;
++-	long		st_blocks;
++-	unsigned long	__unused[3];
++-};
++-
++-#endif /* __s390x__ */
++-#endif
++diff --git a/usr/include/arch/sh/klibc/archstat.h b/usr/include/arch/sh/klibc/archstat.h
++deleted file mode 100644
++index 4f39181ecf240..0000000000000
++--- a/usr/include/arch/sh/klibc/archstat.h
+++++ /dev/null
++@@ -1,38 +0,0 @@
++-#ifndef _KLIBC_ARCHSTAT_H
++-#define _KLIBC_ARCHSTAT_H
++-
++-#include <klibc/stathelp.h>
++-
++-#define _STATBUF_ST_NSEC
++-
++-/* This matches struct stat64 in glibc2.1, hence the absolutely
++- * insane amounts of padding around dev_t's.
++- */
++-struct stat {
++-	__stdev64	(st_dev);
++-	unsigned char	__pad0[4];
++-
++-	unsigned long	st_ino;
++-	unsigned int	st_mode;
++-	unsigned int	st_nlink;
++-
++-	unsigned long	st_uid;
++-	unsigned long	st_gid;
++-
++-	__stdev64	(st_rdev);
++-	unsigned char	__pad3[4];
++-
++-	long long	st_size;
++-	unsigned long	st_blksize;
++-
++-	unsigned long long st_blocks;
++-
++-	struct timespec	st_atim;
++-	struct timespec st_mtim;
++-	struct timespec st_ctim;
++-
++-	unsigned long	__unused1;
++-	unsigned long	__unused2;
++-};
++-
++-#endif
++diff --git a/usr/include/arch/sparc/klibc/archstat.h b/usr/include/arch/sparc/klibc/archstat.h
++deleted file mode 100644
++index 203d40b5d501e..0000000000000
++--- a/usr/include/arch/sparc/klibc/archstat.h
+++++ /dev/null
++@@ -1,37 +0,0 @@
++-#ifndef _KLIBC_ARCHSTAT_H
++-#define _KLIBC_ARCHSTAT_H
++-
++-#include <klibc/stathelp.h>
++-
++-#define _STATBUF_ST_NSEC
++-
++-struct stat {
++-	__stdev64	(st_dev);
++-
++-	unsigned long long st_ino;
++-
++-	unsigned int	st_mode;
++-	unsigned int	st_nlink;
++-
++-	unsigned int	st_uid;
++-	unsigned int	st_gid;
++-
++-	__stdev64	(st_rdev);
++-
++-	unsigned char	__pad3[8];
++-
++-	long long	st_size;
++-	unsigned int	st_blksize;
++-
++-	unsigned char	__pad4[8];
++-	unsigned int	st_blocks;
++-
++-	struct timespec st_atim;
++-	struct timespec st_mtim;
++-	struct timespec st_ctim;
++-
++-	unsigned int	__unused4;
++-	unsigned int	__unused5;
++-};
++-
++-#endif
++diff --git a/usr/include/arch/sparc64/klibc/archstat.h b/usr/include/arch/sparc64/klibc/archstat.h
++deleted file mode 100644
++index 56fb2a4c5fb9f..0000000000000
++--- a/usr/include/arch/sparc64/klibc/archstat.h
+++++ /dev/null
++@@ -1,30 +0,0 @@
++-#ifndef _KLIBC_ARCHSTAT_H
++-#define _KLIBC_ARCHSTAT_H
++-
++-#include <klibc/stathelp.h>
++-
++-#define _STATBUF_ST_NSEC
++-
++-struct stat {
++-	__stdev64	(st_dev);
++-	unsigned long	st_ino;
++-	unsigned long	st_nlink;
++-
++-	unsigned int	st_mode;
++-	unsigned int	st_uid;
++-	unsigned int	st_gid;
++-	unsigned int	__pad0;
++-
++-	__stdev64 (st_rdev);
++-	long		st_size;
++-	long		st_blksize;
++-	long		st_blocks;
++-
++-	struct timespec st_atim;
++-	struct timespec st_mtim;
++-	struct timespec st_ctim;
++-
++-	unsigned long __unused[3];
++-};
++-
++-#endif
++diff --git a/usr/include/arch/x86_64/klibc/archstat.h b/usr/include/arch/x86_64/klibc/archstat.h
++deleted file mode 100644
++index de168ac584e9f..0000000000000
++--- a/usr/include/arch/x86_64/klibc/archstat.h
+++++ /dev/null
++@@ -1,28 +0,0 @@
++-#ifndef _KLIBC_ARCHSTAT_H
++-#define _KLIBC_ARCHSTAT_H
++-
++-#include <klibc/stathelp.h>
++-
++-#define _STATBUF_ST_NSEC
++-
++-struct stat {
++-	__stdev64	(st_dev);
++-	unsigned long	st_ino;
++-	unsigned long	st_nlink;
++-
++-	unsigned int	st_mode;
++-	unsigned int	st_uid;
++-	unsigned int	st_gid;
++-	unsigned int	__pad0;
++-	__stdev64	(st_rdev);
++-	long		st_size;
++-	long		st_blksize;
++-	long		st_blocks;	/* Number 512-byte blocks allocated. */
++-
++-	struct timespec st_atim;
++-	struct timespec st_mtim;
++-	struct timespec st_ctim;
++-  	long		__unused[3];
++-};
++-
++-#endif
++diff --git a/usr/include/klibc/stathelp.h b/usr/include/klibc/stathelp.h
++deleted file mode 100644
++index 9520dad2ff511..0000000000000
++--- a/usr/include/klibc/stathelp.h
+++++ /dev/null
++@@ -1,24 +0,0 @@
++-/*
++- * stathelp.h
++- *
++- * Helper macros for <klibc/archstat.h>
++- */
++-
++-#ifndef _KLIBC_STATHELP_H
++-#define _KLIBC_STATHELP_H
++-
++-#include <klibc/endian.h>
++-
++-/*
++- * Most architectures have a 64-bit field for st_dev and st_rdev,
++- * but dev_t is 32 bits (uint32_t == unsigned int), so make a
++- * macro we can use across all architectures.
++- */
++-
++-#if __BYTE_ORDER == __BIG_ENDIAN
++-# define __stdev64(x)	unsigned int __##x, x;
++-#else
++-# define __stdev64(x)	unsigned int x, __##x;
++-#endif
++-
++-#endif				/* _KLIBC_STATHELP_H */
++diff --git a/usr/include/sys/stat.h b/usr/include/sys/stat.h
++index c4b378ea91a7b..861b46238c57c 100644
++--- a/usr/include/sys/stat.h
+++++ b/usr/include/sys/stat.h
++@@ -8,7 +8,7 @@
++ #include <klibc/extern.h>
++ #include <sys/types.h>
++ #include <sys/time.h>		/* For struct timespec */
++-#include <klibc/archstat.h>
+++#include <linux/stat.h>
++ 
++ /* 2.6.21 kernels have once again hidden a bunch of stuff... */
++ #ifndef S_IFMT
++@@ -48,25 +48,39 @@
++ #define S_IWOTH 00002
++ #define S_IXOTH 00001
++ 
+++#endif
+++
++ #define S_IRWXUGO	(S_IRWXU|S_IRWXG|S_IRWXO)
++ #define S_IALLUGO	(S_ISUID|S_ISGID|S_ISVTX|S_IRWXUGO)
++ #define S_IRUGO		(S_IRUSR|S_IRGRP|S_IROTH)
++ #define S_IWUGO		(S_IWUSR|S_IWGRP|S_IWOTH)
++ #define S_IXUGO		(S_IXUSR|S_IXGRP|S_IXOTH)
++ 
++-#endif
++-
++-#ifdef _STATBUF_ST_NSEC
++-  /* struct stat has struct timespec instead of time_t */
++-# define st_atime  st_atim.tv_sec
++-# define st_mtime  st_mtim.tv_sec
++-# define st_ctime  st_ctim.tv_sec
++-#endif
+++/* struct stat with 64-bit time, not used by kernel UAPI */
+++struct stat {
+++        dev_t		st_dev;
+++        ino_t		st_ino;
+++        mode_t		st_mode;
+++        unsigned int	st_nlink;
+++        uid_t		st_uid;
+++        gid_t		st_gid;
+++        dev_t		st_rdev;
+++        off_t		st_size;
+++        int		st_blksize;
+++        off_t		st_blocks;
+++        struct timespec	st_atim;
+++        struct timespec	st_mtim;
+++        struct timespec	st_ctim;
+++};
+++#define st_atime	st_atim.tv_sec
+++#define st_mtime	st_mtim.tv_sec
+++#define st_ctime	st_ctim.tv_sec
++ 
++ __extern int stat(const char *, struct stat *);
++ __extern int fstat(int, struct stat *);
++ __extern int fstatat(int, const char *, struct stat *, int);
++ __extern int lstat(const char *, struct stat *);
+++__extern int statx(int, const char *, int, unsigned int, struct statx *);
++ __extern mode_t umask(mode_t);
++ __extern int mknod(const char *, mode_t, dev_t);
++ __extern int mknodat(int, const char *, mode_t, dev_t);
++diff --git a/usr/klibc/Kbuild b/usr/klibc/Kbuild
++index eb13a70ed5719..85ebb25a0736b 100644
++--- a/usr/klibc/Kbuild
+++++ b/usr/klibc/Kbuild
++@@ -60,8 +60,8 @@ klib-y += vsnprintf.o snprintf.o vsprintf.o sprintf.o \
++ 	  inet/inet_ntop.o inet/inet_pton.o inet/bindresvport.o \
++ 	  accept.o send.o recv.o \
++ 	  access.o chmod.o chown.o dup2.o mknod.o poll.o rename.o renameat.o \
++-	  stat.o \
++-	  lchown.o link.o rmdir.o unlink.o utimes.o lstat.o mkdir.o \
+++	  fstat.o fstatat.o lstat.o stat.o \
+++	  lchown.o link.o rmdir.o unlink.o utimes.o mkdir.o \
++ 	  readlink.o realpath.o select.o symlink.o pipe.o \
++ 	  ctype/isalnum.o ctype/isalpha.o ctype/isascii.o \
++ 	  ctype/isblank.o ctype/iscntrl.o ctype/isdigit.o \
++diff --git a/usr/klibc/SYSCALLS.def b/usr/klibc/SYSCALLS.def
++index c5920159ef286..00c52e02b4e79 100644
++--- a/usr/klibc/SYSCALLS.def
+++++ b/usr/klibc/SYSCALLS.def
++@@ -133,14 +133,7 @@ int chroot(const char *);
++ <?> int symlinkat(const char *, int, const char *);
++ <?> int readlink(const char *, char *, size_t);
++ <?> int readlinkat(int, const char *, char *, int);
++-<?!ppc64> int stat64,stat::stat(const char *, struct stat *);
++-<?!ppc64> int lstat64,lstat::lstat(const char *, struct stat *);
++-<!ppc64> int fstat64,fstat::fstat(int, struct stat *);
++-<ppc64> int stat::stat(const char *, struct stat *);
++-<ppc64> int lstat::lstat(const char *, struct stat *);
++-<ppc64> int fstat::fstat(int, struct stat *);
++-/* XXX: Is this right?! */
++-<?> int fstatat64,newfstatat,fstatat::fstatat(int, const char *, struct stat *, int);
+++int statx(int, const char *, int, unsigned int, struct statx *);
++ int getdents64,getdents::getdents(unsigned int, struct dirent *, unsigned int);
++ <?> int chown32,chown::chown(const char *, uid_t, gid_t);
++ int fchown32,fchown::fchown(int, uid_t, gid_t);
++diff --git a/usr/klibc/fstat.c b/usr/klibc/fstat.c
++new file mode 100644
++index 0000000000000..36dd661735090
++--- /dev/null
+++++ b/usr/klibc/fstat.c
++@@ -0,0 +1,10 @@
+++#include <fcntl.h>
+++#include <unistd.h>
+++#include <sys/types.h>
+++#include <sys/stat.h>
+++#include <sys/syscall.h>
+++
+++int fstat(int fd, struct stat *buf)
+++{
+++	return fstatat(fd, "", buf, AT_EMPTY_PATH);
+++}
++diff --git a/usr/klibc/fstatat.c b/usr/klibc/fstatat.c
++new file mode 100644
++index 0000000000000..12b5093eea0cf
++--- /dev/null
+++++ b/usr/klibc/fstatat.c
++@@ -0,0 +1,36 @@
+++#include <unistd.h>
+++#include <fcntl.h>
+++#include <sys/types.h>
+++#include <sys/stat.h>
+++#include <sys/syscall.h>
+++
+++static void timespec_from_statx(struct timespec *ts,
+++				const struct statx_timestamp *xts)
+++{
+++	ts->tv_sec = xts->tv_sec;
+++	ts->tv_nsec = xts->tv_nsec;
+++}
+++
+++int fstatat(int dirfd, const char *path, struct stat *buf, int flags)
+++{
+++	struct statx xbuf;
+++
+++	if (statx(dirfd, path, flags | AT_NO_AUTOMOUNT, STATX_BASIC_STATS,
+++		  &xbuf))
+++		return -1;
+++
+++	buf->st_dev = makedev(xbuf.stx_dev_major, xbuf.stx_dev_minor);
+++	buf->st_ino = xbuf.stx_ino;
+++	buf->st_nlink = xbuf.stx_nlink;
+++	buf->st_mode = xbuf.stx_mode;
+++	buf->st_uid = xbuf.stx_uid;
+++	buf->st_gid = xbuf.stx_gid;
+++	buf->st_rdev = makedev(xbuf.stx_rdev_major, xbuf.stx_rdev_minor);
+++	buf->st_size = xbuf.stx_size;
+++	buf->st_blksize = xbuf.stx_blksize;
+++	buf->st_blocks = xbuf.stx_blocks;
+++	timespec_from_statx(&buf->st_atim, &xbuf.stx_atime);
+++	timespec_from_statx(&buf->st_ctim, &xbuf.stx_ctime);
+++	timespec_from_statx(&buf->st_mtim, &xbuf.stx_mtime);
+++	return 0;
+++}
++diff --git a/usr/klibc/lstat.c b/usr/klibc/lstat.c
++index 3288a332f14f5..3e8146f9c340d 100644
++--- a/usr/klibc/lstat.c
+++++ b/usr/klibc/lstat.c
++@@ -4,11 +4,7 @@
++ #include <sys/stat.h>
++ #include <sys/syscall.h>
++ 
++-#ifndef __NR_lstat
++-
++ int lstat(const char *path, struct stat *buf)
++ {
++ 	return fstatat(AT_FDCWD, path, buf, AT_SYMLINK_NOFOLLOW);
++ }
++-
++-#endif  /* __NR_lstat  */
++diff --git a/usr/klibc/stat.c b/usr/klibc/stat.c
++index 65063b092be59..673fb0664a899 100644
++--- a/usr/klibc/stat.c
+++++ b/usr/klibc/stat.c
++@@ -4,11 +4,7 @@
++ #include <sys/stat.h>
++ #include <sys/syscall.h>
++ 
++-#ifndef __NR_stat
++-
++ int stat(const char *path, struct stat *buf)
++ {
++ 	return fstatat(AT_FDCWD, path, buf, 0);
++ }
++-
++-#endif /* __NR_stat */
++-- 
++cgit 
++
++
+diff -uNr a/debian/patches/series b/debian/patches/series
+--- a/debian/patches/series	2023-02-13 06:54:06.000000000 +0800
++++ b/debian/patches/series	2023-05-25 21:00:29.000000000 +0800
+@@ -1 +1,3 @@
+ klibc-kbuild-include-provided-kcflags-in-klibccflags.patch
++remove-statx.patch
++support-loong64.patch
+diff -uNr a/debian/patches/support-loong64.patch b/debian/patches/support-loong64.patch
+--- a/debian/patches/support-loong64.patch	1970-01-01 08:00:00.000000000 +0800
++++ b/debian/patches/support-loong64.patch	2023-05-25 21:00:29.000000000 +0800
+@@ -0,0 +1,327 @@
++From 53ce949578446360c4b636a46eadfdb7aed2779d Mon Sep 17 00:00:00 2001
++From: Feiyang Chen <chenfeiyang@loongson.cn>
++Date: Mon, 20 Feb 2023 10:46:02 +0800
++Subject: [klibc] Add LoongArch64 port
++
++Add LoongArch64 support. I've cribbed most of this from the
++RISC-V and MIPS ports.
++
++Signed-off-by: Feiyang Chen <chenfeiyang@loongson.cn>
++Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
++---
++ usr/include/arch/loongarch64/klibc/archconfig.h | 15 ++++++++
++ usr/include/arch/loongarch64/klibc/archsetjmp.h | 26 +++++++++++++
++ usr/include/arch/loongarch64/klibc/archsignal.h | 14 +++++++
++ usr/include/arch/loongarch64/machine/asm.h      | 24 ++++++++++++
++ usr/klibc/SYSCALLS.def                          |  2 +-
++ usr/klibc/arch/loongarch64/Kbuild               |  7 ++++
++ usr/klibc/arch/loongarch64/MCONFIG              | 23 ++++++++++++
++ usr/klibc/arch/loongarch64/crt0.S               | 18 +++++++++
++ usr/klibc/arch/loongarch64/setjmp.S             | 50 +++++++++++++++++++++++++
++ usr/klibc/arch/loongarch64/syscall.S            | 13 +++++++
++ usr/klibc/arch/loongarch64/sysstub.ph           | 26 +++++++++++++
++ 11 files changed, 217 insertions(+), 1 deletion(-)
++ create mode 100644 usr/include/arch/loongarch64/klibc/archconfig.h
++ create mode 100644 usr/include/arch/loongarch64/klibc/archsetjmp.h
++ create mode 100644 usr/include/arch/loongarch64/klibc/archsignal.h
++ create mode 100644 usr/include/arch/loongarch64/machine/asm.h
++ create mode 100644 usr/klibc/arch/loongarch64/Kbuild
++ create mode 100644 usr/klibc/arch/loongarch64/MCONFIG
++ create mode 100644 usr/klibc/arch/loongarch64/crt0.S
++ create mode 100644 usr/klibc/arch/loongarch64/setjmp.S
++ create mode 100644 usr/klibc/arch/loongarch64/syscall.S
++ create mode 100644 usr/klibc/arch/loongarch64/sysstub.ph
++
++diff --git a/usr/include/arch/loongarch64/klibc/archconfig.h b/usr/include/arch/loongarch64/klibc/archconfig.h
++new file mode 100644
++index 0000000000000..7a47b915a9464
++--- /dev/null
+++++ b/usr/include/arch/loongarch64/klibc/archconfig.h
++@@ -0,0 +1,15 @@
+++/*
+++ * include/arch/loongarch64/klibc/archconfig.h
+++ *
+++ * See include/klibc/sysconfig.h for the options that can be set in
+++ * this file.
+++ *
+++ */
+++
+++#ifndef _KLIBC_ARCHCONFIG_H
+++#define _KLIBC_ARCHCONFIG_H
+++
+++/* We have an MMU but no fork() syscall */
+++#define _KLIBC_NO_MMU 0
+++
+++#endif				/* _KLIBC_ARCHCONFIG_H */
++diff --git a/usr/include/arch/loongarch64/klibc/archsetjmp.h b/usr/include/arch/loongarch64/klibc/archsetjmp.h
++new file mode 100644
++index 0000000000000..939c0f5f5c565
++--- /dev/null
+++++ b/usr/include/arch/loongarch64/klibc/archsetjmp.h
++@@ -0,0 +1,26 @@
+++/*
+++ * include/arch/loongarch64/klibc/archsetjmp.h
+++ */
+++
+++#ifndef _KLIBC_ARCHSETJMP_H
+++#define _KLIBC_ARCHSETJMP_H
+++
+++struct __jmp_buf {
+++	unsigned long __ra;
+++	unsigned long __sp;
+++	unsigned long __r21;
+++	unsigned long __fp;
+++	unsigned long __s0;
+++	unsigned long __s1;
+++	unsigned long __s2;
+++	unsigned long __s3;
+++	unsigned long __s4;
+++	unsigned long __s5;
+++	unsigned long __s6;
+++	unsigned long __s7;
+++	unsigned long __s8;
+++};
+++
+++typedef struct __jmp_buf jmp_buf[1];
+++
+++#endif				/* _SETJMP_H */
++diff --git a/usr/include/arch/loongarch64/klibc/archsignal.h b/usr/include/arch/loongarch64/klibc/archsignal.h
++new file mode 100644
++index 0000000000000..c22a5d7caf7df
++--- /dev/null
+++++ b/usr/include/arch/loongarch64/klibc/archsignal.h
++@@ -0,0 +1,14 @@
+++/*
+++ * include/arch/loongarch64/klibc/archsignal.h
+++ *
+++ * Architecture-specific signal definitions
+++ *
+++ */
+++
+++#ifndef _KLIBC_ARCHSIGNAL_H
+++#define _KLIBC_ARCHSIGNAL_H
+++
+++#include <asm/signal.h>
+++/* No special stuff for this architecture */
+++
+++#endif
++diff --git a/usr/include/arch/loongarch64/machine/asm.h b/usr/include/arch/loongarch64/machine/asm.h
++new file mode 100644
++index 0000000000000..6fe5dba297048
++--- /dev/null
+++++ b/usr/include/arch/loongarch64/machine/asm.h
++@@ -0,0 +1,24 @@
+++/*
+++ * include/arch/loongarch64/machine/asm.h
+++ */
+++
+++#ifndef _MACHINE_ASM_H
+++#define _MACHINE_ASM_H
+++
+++/*
+++ * ENTRY - declare entry point
+++ */
+++#define ENTRY(symbol)                           \
+++	.globl  symbol;                         \
+++	.align  2;                              \
+++	.type   symbol, @function;              \
+++symbol:
+++
+++/*
+++ * END - mark end of function
+++ */
+++#define END(function)                           \
+++	.size   function, . - function
+++
+++
+++#endif				/* _MACHINE_ASM_H */
++diff --git a/usr/klibc/SYSCALLS.def b/usr/klibc/SYSCALLS.def
++index 660efc66d52f6..9b6b1127a87bc 100644
++--- a/usr/klibc/SYSCALLS.def
+++++ b/usr/klibc/SYSCALLS.def
++@@ -21,7 +21,7 @@ void _exit,exit::_exit(int);
++ <?!ia64> pid_t clone::__clone(unsigned long, void *);
++ <?ia64> pid_t clone::__clone2(unsigned long, void *, void *);
++ # if ! _KLIBC_NO_MMU
++-<!sparc,sparc64,ia64,arm64,riscv64> pid_t fork();
+++<!sparc,sparc64,ia64,arm64,riscv64,loongarch64> pid_t fork();
++ <sparc,sparc64> pid_t fork@forkish();
++ #endif
++ #if _KLIBC_REAL_VFORK
++diff --git a/usr/klibc/arch/loongarch64/Kbuild b/usr/klibc/arch/loongarch64/Kbuild
++new file mode 100644
++index 0000000000000..60c7660ce7fdf
++--- /dev/null
+++++ b/usr/klibc/arch/loongarch64/Kbuild
++@@ -0,0 +1,7 @@
+++#
+++# klibc files for LoongArch64
+++#
+++
+++klib-y  := setjmp.o syscall.o
+++always  := crt0.o
+++targets := crt0.o
++diff --git a/usr/klibc/arch/loongarch64/MCONFIG b/usr/klibc/arch/loongarch64/MCONFIG
++new file mode 100644
++index 0000000000000..0ef5eae8def2e
++--- /dev/null
+++++ b/usr/klibc/arch/loongarch64/MCONFIG
++@@ -0,0 +1,23 @@
+++# -*- makefile -*-
+++#
+++# arch/loongarch64/MCONFIG
+++#
+++# Special rules for this architecture.  Note that this is actually
+++# included from the main Makefile, and that pathnames should be
+++# accordingly.
+++#
+++
+++KLIBCOPTFLAGS	  += -Os -fomit-frame-pointer
+++KLIBCBITSIZE      = 64
+++
+++# Extra linkflags when building the shared version of the library
+++# This address needs to be reachable using normal inter-module
+++# calls, and work on the memory models for this architecture
+++# 4862 MB - normal binaries start at 4608 MB. Non-PIC jumps usually
+++# use the BL instruction which requires a destination between -128M
+++# to 128M. Since we can't put ourselves below the normal load
+++# address, use the very top of the 128M region (minus 2MB)
+++KLIBCSHAREDFLAGS  = $(LD_IMAGE_BASE_OPT) 0x127E00000
+++
+++# Kernel has never used stack trampolines
+++KLIBCEXECSTACK    := n
++diff --git a/usr/klibc/arch/loongarch64/crt0.S b/usr/klibc/arch/loongarch64/crt0.S
++new file mode 100644
++index 0000000000000..cb3da6694228c
++--- /dev/null
+++++ b/usr/klibc/arch/loongarch64/crt0.S
++@@ -0,0 +1,18 @@
+++#
+++# arch/loongarch64/crt0.S
+++#
+++# Does arch-specific initialization and invokes __libc_init
+++# with the appropriate arguments.
+++#
+++# See __static_init.c or __shared_init.c for the expected
+++# arguments.
+++#
+++
+++#include <machine/asm.h>
+++
+++ENTRY(_start)
+++	move		$a0, $sp		# Pointer to ELF entry structure
+++	move		$a1, $zero		# No onexit pointer
+++	bstrins.d	$sp, $zero, 3, 0	# Align stack to 16 bytes
+++	bl		__libc_init
+++END(_start)
++diff --git a/usr/klibc/arch/loongarch64/setjmp.S b/usr/klibc/arch/loongarch64/setjmp.S
++new file mode 100644
++index 0000000000000..11779885df9be
++--- /dev/null
+++++ b/usr/klibc/arch/loongarch64/setjmp.S
++@@ -0,0 +1,50 @@
+++/*
+++ * arch/loongarch64/setjmp.S
+++ *
+++ * setjmp/longjmp for the LoongArch64 architecture
+++ *
+++ * The jmp_buf is assumed to contain the following, in order:
+++ *	pc (ra)
+++ *	sp
+++ *	r21
+++ *	fp
+++ *	s0..s8
+++ */
+++
+++#include <machine/asm.h>
+++
+++ENTRY(setjmp)
+++	st.d	$ra,  $a0, 0
+++	st.d	$sp,  $a0, 8
+++	st.d	$r21, $a0, 16
+++	st.d	$fp,  $a0, 24
+++	st.d	$s0,  $a0, 32
+++	st.d	$s1,  $a0, 40
+++	st.d	$s2,  $a0, 48
+++	st.d	$s3,  $a0, 56
+++	st.d	$s4,  $a0, 64
+++	st.d	$s5,  $a0, 72
+++	st.d	$s6,  $a0, 80
+++	st.d	$s7,  $a0, 88
+++	st.d	$s8,  $a0, 96
+++	move	$a0,  $zero
+++	jr	$ra
+++END(setjmp)
+++
+++ENTRY(longjmp)
+++	ld.d	$ra,  $a0, 0
+++	ld.d	$sp,  $a0, 8
+++	ld.d	$r21, $a0, 16
+++	ld.d	$fp,  $a0, 24
+++	ld.d	$s0,  $a0, 32
+++	ld.d	$s1,  $a0, 40
+++	ld.d	$s2,  $a0, 48
+++	ld.d	$s3,  $a0, 56
+++	ld.d	$s4,  $a0, 64
+++	ld.d	$s5,  $a0, 72
+++	ld.d	$s6,  $a0, 80
+++	ld.d	$s7,  $a0, 88
+++	ld.d	$s8,  $a0, 96
+++	move	$a0,  $a1
+++	jr	$ra
+++END(longjmp)
++diff --git a/usr/klibc/arch/loongarch64/syscall.S b/usr/klibc/arch/loongarch64/syscall.S
++new file mode 100644
++index 0000000000000..9a2ed46939c6f
++--- /dev/null
+++++ b/usr/klibc/arch/loongarch64/syscall.S
++@@ -0,0 +1,13 @@
+++#include <machine/asm.h>
+++#include <asm/unistd.h>
+++
+++ENTRY(__syscall_common)
+++	syscall 0
+++	li.w	$t0, -4096
+++	bleu	$a0, $t0, 1f
+++	sub.d	$a0, $zero, $a0
+++	la	$t0, errno
+++	st.d	$a0, $t0, 0
+++	li.w	$a0, -1
+++1:	jr	$ra
+++END(__syscall_common)
++diff --git a/usr/klibc/arch/loongarch64/sysstub.ph b/usr/klibc/arch/loongarch64/sysstub.ph
++new file mode 100644
++index 0000000000000..699bdc2fc99d9
++--- /dev/null
+++++ b/usr/klibc/arch/loongarch64/sysstub.ph
++@@ -0,0 +1,26 @@
+++# -*- perl -*-
+++#
+++# arch/loongarch64/sysstub.ph
+++#
+++# Script to generate system call stubs
+++#
+++
+++# On LoongArch64, most system calls follow the standard convention, with
+++# the system call number in a7 and the return value in a0.
+++
+++sub make_sysstub($$$$$@) {
+++    my($outputdir, $fname, $type, $sname, $stype, @args) = @_;
+++
+++    $stype = $stype || 'common';
+++    open(OUT, '>', "${outputdir}/${fname}.S");
+++    print OUT "#include <machine/asm.h>\n";
+++    print OUT "#include <asm/unistd.h>\n";
+++    print OUT "\n";
+++    print OUT "ENTRY(${fname})\n";
+++    print OUT "\tli.w\t\$a7, __NR_${sname}\n";
+++    print OUT "\tb\t__syscall_${stype}\n";
+++    print OUT "END(${fname})\n";
+++    close(OUT);
+++}
+++
+++1;
++-- 
++cgit 
++
++
+diff -uNr a/debian/rules b/debian/rules
+--- a/debian/rules	2022-01-31 06:49:22.000000000 +0800
++++ b/debian/rules	2023-05-25 21:00:29.000000000 +0800
+@@ -25,6 +25,9 @@
+ ifeq ($(DEB_HOST_ARCH),hppa)
+ KLIBCARCH := parisc
+ endif
++ifeq ($(DEB_HOST_ARCH),loong64)
++KLIBCARCH := loongarch64
++endif
+ ifneq (,$(filter powerpc%,$(DEB_HOST_ARCH)))
+ KLIBCARCH := ppc
+ endif
