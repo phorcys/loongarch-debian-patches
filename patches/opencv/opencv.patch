@@ -1,0 +1,21 @@
+diff -uNr a/debian/control b/debian/control
+--- a/debian/control	2023-05-12 17:40:38.000000000 +0800
++++ b/debian/control	2023-06-05 01:04:40.000000000 +0800
+@@ -1061,7 +1060,7 @@
+  recognition, camera calibration and 3D reconstruction.
+ 
+ Package: libopencv-java
+-Architecture: amd64 arm64 armel armhf i386 mips64el mipsel ppc64el s390x alpha ia64 m68k powerpc ppc64 riscv64 sh4 sparc64 x32
++Architecture: amd64 arm64 armel armhf i386 loong64 mips64el mipsel ppc64el s390x alpha ia64 m68k powerpc ppc64 riscv64 sh4 sparc64 x32
+ Multi-Arch: no
+ Section: java
+ Depends: libopencv406-jni (>= ${binary:Version}), ${misc:Depends}
+@@ -1082,7 +1081,7 @@
+  recognition, camera calibration and 3D reconstruction.
+ 
+ Package: libopencv406-jni
+-Architecture: amd64 arm64 armel armhf i386 mips64el mipsel ppc64el s390x alpha ia64 m68k powerpc ppc64 riscv64 sh4 sparc64 x32
++Architecture: amd64 arm64 armel armhf i386 loong64 mips64el mipsel ppc64el s390x alpha ia64 m68k powerpc ppc64 riscv64 sh4 sparc64 x32
+ Multi-Arch: no
+ Section: java
+ Depends: ${misc:Depends},
